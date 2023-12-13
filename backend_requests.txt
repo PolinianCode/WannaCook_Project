@@ -1,0 +1,46 @@
+1)Get all users
+GET: localhost:8000/api/users/
+
+
+2)Create new user
+POST: localhost:8000/api/user/create/
+{
+  "nickname": "user",
+	"email": "test@gmail.com",
+	"password": "12345",
+	"is_moderator": 0
+}
+
+3) Delete user
+
+POST: localhost:8000/api/user/delete/<str: username>/
+
+4) Get categories
+GET: localhost:8000/api/categories/
+
+
+4)Recipe add
+POST: http://localhost:8000/api/recipe/add/
+{
+  "title": "Recipe Title",
+  "description": "Lorem ipsum dolor sit amet",
+  "instruction": "Instruction",
+  "user_id": 4,
+	"category_id": 1
+}
+
+5)Recipe modify
+
+PUT: http://localhost:8000/api/recipe/modify/<int:recipe_id>/
+
+{
+  "title": "Recipe Titlee",
+  "description": "Lorem ipsum dolor sit amet",
+  "instruction": "Instruction",
+  "user_id": 4,
+	"category_id": 2
+}
+
+6) Recipe delete
+
+GET: http://localhost:8000/api/recipe/delete/<int:recipe_id>/

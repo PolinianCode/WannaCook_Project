@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe adding</title>
+</head>
+<body>
+    <form id="recipeForm">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required><br><br>
+    
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea><br><br>
+    
+        <label for="instruction">Instruction:</label>
+        <textarea id="instruction" name="instruction" required></textarea><br><br>
+    
+        <label for="category">Category:</label>
+        <select id="category" name="category" required>
+        </select><br><br>
+    
+        <label for="user_id">User ID:</label>
+        <input type="number" id="user_id" name="user_id" required><br><br>
+    
+        <button type="button" onclick="submitRecipe()">Add Recipe</button>
+    </form>
+
+    <script>
+        function loadCategories() {
+        fetch('http://localhost:8000/api/categories/')
+            .then(response => response.json())
+            .then(data => {
+                const categorySelect = document.getElementById('category');
+                categorySelect.innerHTML = '';
+
+                data.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = category.name;
+                    categorySelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error loading categories:', error));
+    }
+
+    function submitRecipe() {
+        const form = document.getElementById('recipeForm');
+        const formData = new FormData(form);
+
+
+        fetch('/api/recipe/add/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+        })
+        .catch(error => console.error('Error submitting recipe:', error));
+    }
+
+
+    window.onload = function () {
+        loadCategories();
+    };
+    </script>
+
+</body>
+</html>
