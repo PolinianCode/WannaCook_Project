@@ -6,19 +6,23 @@ from django.utils import timezone
 from .models import Recipes
 from .models import Users
 from .models import Categories
+from .models import Favorites
 import json
-from .utils import check_user_exist, check_user_email_exist
+from .utils import check_user_exist, check_user_email_exist, check_user_favorites_exists
 from django.shortcuts import get_object_or_404
 
+# --------------------- USER ---------------------
+# This section contains API endpoints related to user operations.
 
-#Get all users from DB
+
+# Get all users from database.
 @csrf_exempt
 def api_get_users(request):
-    all_users = Users.objects.order_by('-user_id')[:5]
+    all_users = Users.objects.order_by('-user_id')
     serialized_users = serialize('json', all_users)
     return JsonResponse({'latest_recipes':  serialized_users}, safe=False)
 
-#Add new user do db
+# Add a new user to the database.
 @csrf_exempt
 def api_add_user(request):
     try:
@@ -48,7 +52,7 @@ def api_add_user(request):
         print(e)
         return JsonResponse({'error': 'Internal Server Error'}, status=500)
     
-#Remove user with nickname
+# Remove a user from the database by nickname.
 @csrf_exempt
 def api_remove_user(request, username):
     try:
@@ -62,7 +66,10 @@ def api_remove_user(request, username):
         return JsonResponse({"message": f"User {username} doesn't exist"})
     
 
-#Add new Recipe to DB
+# --------------------- RECIPE ---------------------
+# This section contains API endpoints related to recipe operations.
+
+# Add a new recipe to the database.
 @csrf_exempt
 def api_add_recipe(request):
     try:
@@ -107,14 +114,7 @@ def api_add_recipe(request):
         print(e)
         return JsonResponse({"message": f"Recipe cant be added to DB {e}"})
 
-
-#Get all recipe categories from DB
-@csrf_exempt
-def api_load_recipe_categories(request):
-    all_categories = Categories.objects.order_by('-id')
-    serialized_categories = serialize('json', all_categories)
-    return JsonResponse({'all_categories':  serialized_categories}, safe=False)
-
+# Modify an existing recipe in the database.
 @csrf_exempt
 def api_modify_recipe(request, recipe_id):
 
@@ -146,8 +146,9 @@ def api_modify_recipe(request, recipe_id):
     except Exception as e:
         print(e)
         return JsonResponse({"message": f"Recipe modification failed: {e}"})
-    
 
+# Delete a recipe from the database.
+@csrf_exempt
 def api_delete_recipe(request, recipe_id):
      try:
         recipe = get_object_or_404(Recipes, recipe_id=recipe_id)
@@ -159,5 +160,41 @@ def api_delete_recipe(request, recipe_id):
         print(e)
         return JsonResponse({"message": f"Recipe {recipe_id} doesn't exist"})
          
-  
+
+
+# --------------------- Utils ---------------------
+# This section contains API endpoints related to user/recipe utils.
+
+# Get all recipe categories from the database.
+@csrf_exempt
+def api_load_recipe_categories(request):
+    all_categories = Categories.objects.order_by('-id')
+    serialized_categories = serialize('json', all_categories)
+    return JsonResponse({'all_categories':  serialized_categories}, safe=False)
+
+# Add a recipe to the user favorites list.
+@csrf_exempt
+def api_add_favorite(request):
+    try:
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            recipe_id_data = data.get('recipe_id', None)
+            user_id_data = data.get('user_id', None)
+
+            if not recipe_id_data or not user_id_data:
+                return JsonResponse({"message": "Missing requirement parameters"})
+
+            if check_user_favorites_exists(recipe_id_data, user_id_data):
+                return JsonResponse({"message": "Recipe is already in the favorites list for this user"})
+            
+            else:
+                favorite = Favorites(recipe_id = recipe_id_data, user_id = user_id_data)
+                favorite.save()
+
+                return JsonResponse({"message": f"Recipe with id {recipe_id_data} added tro favorites list of user with id {user_id_data}"})
+        else:
+             return JsonResponse({'error': 'Request Error'}, status=400)
+    except Exception as e:
+        print(e)
+        return JsonResponse({'error': 'Internal Server Error'}, status=500)
     
