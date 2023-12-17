@@ -1,12 +1,8 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.serializers import serialize
-from django.http import HttpResponse
 from django.utils import timezone
-from .models import Recipes
-from .models import Users
-from .models import Categories
-from .models import Favorites
+from .models import Recipes, Users, Categories, Favorites
 import json
 from .utils import check_user_exist, check_user_email_exist, check_user_favorites_exists
 from django.shortcuts import get_object_or_404
@@ -52,6 +48,18 @@ def api_add_user(request):
         print(e)
         return JsonResponse({'error': 'Internal Server Error'}, status=500)
     
+
+# Login user(not finished)
+@csrf_exempt
+def api_login_user(request):
+    try:
+        data = json.loads(request.body)
+        login = data.get('nickname')
+        password = data.get('password')
+    except Exception as e:
+        print(e)
+        return JsonResponse({"message": f"Recipe cant be added to DB {e}"})
+
 # Remove a user from the database by nickname.
 @csrf_exempt
 def api_remove_user(request, username):
@@ -68,6 +76,7 @@ def api_remove_user(request, username):
 
 # --------------------- RECIPE ---------------------
 # This section contains API endpoints related to recipe operations.
+
 
 # Add a new recipe to the database.
 @csrf_exempt
@@ -159,11 +168,12 @@ def api_delete_recipe(request, recipe_id):
      except Exception as e:
         print(e)
         return JsonResponse({"message": f"Recipe {recipe_id} doesn't exist"})
-         
 
 
-# --------------------- Utils ---------------------
+
+# --------------------- UTILS ---------------------
 # This section contains API endpoints related to user/recipe utils.
+
 
 # Get all recipe categories from the database.
 @csrf_exempt
@@ -197,4 +207,13 @@ def api_add_favorite(request):
     except Exception as e:
         print(e)
         return JsonResponse({'error': 'Internal Server Error'}, status=500)
-    
+
+
+
+# --------------------- SEARCH ---------------------
+# This section contains API endpoints related to search function.
+
+
+
+
+

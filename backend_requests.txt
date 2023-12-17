@@ -15,10 +15,6 @@ POST: localhost:8000/api/user/create/
 
 POST: localhost:8000/api/user/delete/<str: username>/
 
-4) Get categories
-GET: localhost:8000/api/categories/
-
-
 4)Recipe add
 POST: http://localhost:8000/api/recipe/add/
 {
@@ -26,7 +22,7 @@ POST: http://localhost:8000/api/recipe/add/
   "description": "Lorem ipsum dolor sit amet",
   "instruction": "Instruction",
   "user_id": 4,
-	"category_id": 1
+  "category_id": 1
 }
 
 5)Recipe modify
@@ -44,3 +40,21 @@ PUT: http://localhost:8000/api/recipe/modify/<int:recipe_id>/
 6) Recipe delete
 
 GET: http://localhost:8000/api/recipe/delete/<int:recipe_id>/
+
+
+
+7) Get categories
+GET: localhost:8000/api/categories/
+
+
+8) Add recipe to favourites
+
+POST: http://localhost:8000/api/recipe/favorites/
+
+{
+ 	"recipe_id": 5,
+	"user_id": 5
+}
+
+
+
