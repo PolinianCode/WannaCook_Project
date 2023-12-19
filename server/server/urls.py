@@ -9,5 +9,8 @@ urlpatterns = [
     path('api/recipe/delete/<int:recipe_id>/', views.api_delete_recipe, name="api_delete_recipe"),
     path('api/recipe/modify/<int:recipe_id>/', views.api_modify_recipe, name="api_modify_recipe"),
     path('api/categories/', views.api_load_recipe_categories, name='api_load_recipe_categories'),
-    path('api/recipe/favorites/', views.api_add_favorite, name='api_add_favorite')
+    path('api/recipe/favorites/', views.api_add_favorite, name='api_add_favorite'),
+    path('api/comment/add/', views.api_add_comment, name='api_add_comment'),
+    path('api/comment/delete/<int:comment_id>/', views.api_remove_comment, name='api_remove_comment'),
+    path('api/comment/get/<int:recipe_id>/', views.api_get_comments, name='api_get_comments')
 ]

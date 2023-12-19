@@ -1,9 +1,13 @@
 from django.http import JsonResponse
+from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
 from django.core.serializers import serialize
 from django.utils import timezone
-from .models import Recipes, Users, Categories, Favorites
+from rest_framework.decorators import api_view
+from .models import Recipes, Users, Categories, Favorites, Comments
+from .serializers import UsersSerializer
 import json
+from rest_framework import status
 from .utils import check_user_exist, check_user_email_exist, check_user_favorites_exists
 from django.shortcuts import get_object_or_404
 
@@ -12,13 +16,16 @@ from django.shortcuts import get_object_or_404
 
 
 # Get all users from database.
+@api_view(['GET'])
 @csrf_exempt
 def api_get_users(request):
     all_users = Users.objects.order_by('-user_id')
-    serialized_users = serialize('json', all_users)
-    return JsonResponse({'latest_recipes':  serialized_users}, safe=False)
+    serialized_users = UsersSerializer(all_users, many=True)
+    return Response({'latest_users': serialized_users.data}, status=status.HTTP_200_OK)
+
 
 # Add a new user to the database.
+@api_view(['POST'])
 @csrf_exempt
 def api_add_user(request):
     try:
@@ -50,6 +57,7 @@ def api_add_user(request):
     
 
 # Login user(not finished)
+@api_view(['POST'])
 @csrf_exempt
 def api_login_user(request):
     try:
@@ -60,7 +68,9 @@ def api_login_user(request):
         print(e)
         return JsonResponse({"message": f"Recipe cant be added to DB {e}"})
 
+
 # Remove a user from the database by nickname.
+@api_view(['DELETE'])
 @csrf_exempt
 def api_remove_user(request, username):
     try:
@@ -208,7 +218,56 @@ def api_add_favorite(request):
         print(e)
         return JsonResponse({'error': 'Internal Server Error'}, status=500)
 
+# Add comment
+@csrf_exempt
+def api_add_comment(request):
+    try:
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            recipe_id_data = data.get('recipe_id', None)
+            user_id_data = data.get('user_id', None)
+            comment_text_data = data.get('comment_text', '')
 
+            current_datetime = timezone.now()
+            formatted_datetime = current_datetime.strftime("%Y-%m-%d")
+
+            if not recipe_id_data or not user_id_data or not comment_text_data:
+                return JsonResponse({"message": "Missing required parameters"}, status=400)
+
+            # Check if the recipe and user exist before adding the comment
+            recipe = get_object_or_404(Recipes, pk=recipe_id_data)
+            user = get_object_or_404(Users, pk=user_id_data)
+
+            comment = Comments(recipe=recipe, user=user, comment_text=comment_text_data, comment_date = formatted_datetime)
+            comment.save()
+
+            return JsonResponse({"message": "Comment added successfully"})
+
+        return JsonResponse({'error': 'Request Error'}, status=400)
+
+    except Exception as e:
+        print(e)
+        return JsonResponse({"message": f"Comment couldn't be added: {e}"}, status=500)
+
+# Delete a comment from the database.
+@csrf_exempt
+def api_remove_comment(request, comment_id):
+    try:
+        comment = get_object_or_404(Comments, pk=comment_id)
+        comment.delete()
+
+        return JsonResponse({"message": f"Comment {comment_id} has been deleted."})
+
+    except Exception as e:
+        print(e)
+        return JsonResponse({"message": f"Comment {comment_id} doesn't exist"}, status=404)
+
+
+@csrf_exempt
+def api_get_comments(request, recipe_id):
+    recipe_comments = Comments.objects.order_by('-comment_date')
+    serialized_comments = serialize('json', recipe_comments)
+    return JsonResponse({'latest_recipes':  serialized_comments}, safe=False)
 
 # --------------------- SEARCH ---------------------
 # This section contains API endpoints related to search function.
