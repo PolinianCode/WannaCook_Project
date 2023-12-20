@@ -50,7 +50,7 @@ POST: localhost:8000/api/recipe/add/
 
 6) Remove recipe
 
-DELETE: localhost:8000/api/recipe/delete
+DELETE: localhost:8000/api/recipe/delete/
 
 {
    "recipe_id": 
