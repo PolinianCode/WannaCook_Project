@@ -47,10 +47,17 @@ POST: localhost:8000/api/recipe/add/
   "rating_num": 0
 }
 
+#)Get recipe
+GET: localhost:8000/api/recipe/get/
+
+{
+  "recipe_id":
+}
+
 
 6) Remove recipe
 
-DELETE: localhost:8000/api/recipe/delete
+DELETE: localhost:8000/api/recipe/delete/
 
 {
    "recipe_id": 
@@ -73,7 +80,55 @@ PUT: localhost:8000/api/recipe/modify/
 
 GET: localhost:8000/api/categories/
 
+#)Add category
 
+POST: localhost:8000/api/category/add/
+
+{
+  "name":
+}
+
+#)Delete category
+
+POST: localhost:8000/api/category/delete/
+
+{
+  "category_id":
+}
+
+
+
+
+#)Add ingredient
+
+POST: localhost:8000/api/ingredient/add/
+
+{
+  "name":
+}
+
+#)Delete ingredient
+
+POST: localhost:8000/api/ingredient/delete/
+
+{
+  "ingredient_id":
+}
+
+
+#)Search recipe
+
+GET: localhost:8000/api/recipe/search/
+
+{
+  "title":
+  "category":
+  "user":
+}
+
+
+#) Show user's favorites
+GET: localhost:8000/api/recipe/favorites
 
 9) Add favorites
 POST: localhost:8000/api/recipe/favorites/add/

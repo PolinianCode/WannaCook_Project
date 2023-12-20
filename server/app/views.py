@@ -243,7 +243,7 @@ def api_delete_category(request):
 @csrf_exempt    
 def api_load_recipe_ingredients(request):
     try:
-        ingredients = Ingredients.objects.order_by('-id')
+        ingredients = Ingredients.objects.order_by('name')
         serialized_ingredients = IngredientsSerializer(ingredients, many=True)
         return Response({'Ingredients': serialized_ingredients.data}, status=status.HTTP_200_OK)
     except Exception as e:
@@ -313,7 +313,7 @@ def api_search_recipes(request):
 @csrf_exempt
 def api_load_favorites(request):
     try:
-        favorites = Favorites.objects.filter(user = request.user).order_by('-id')
+        favorites = Favorites.objects.filter(user = request.data.get('user')).order_by('-id')
         serialized_favorites = FavoritesSerializer(favorites, many=True)
         return Response({'Favorites': serialized_favorites.data}, status=status.HTTP_200_OK)
     except Exception as e:
@@ -349,8 +349,8 @@ def api_add_favorite(request):
 def api_remove_favorite(request):
     try:
 
-        user_id = request.data.get('user')
-        recipe_id = request.data.get('recipe')
+        user_id = request.data.get('user_id')
+        recipe_id = request.data.get('recipe_id')
 
 
         if user_id is None or recipe_id is None:
@@ -437,7 +437,13 @@ def api_modify_comment(request):
 # Get comments for recipe
 @api_view(['GET'])
 @csrf_exempt
-def api_get_comments(request, recipe_id):
-    recipe_comments = Comments.objects.order_by('-comment_date')
-    serialized_comments = CommentsSerializer(recipe_comments, many=True)
-    return Response({'Comments': serialized_comments.data}, status=status.HTTP_200_OK)
+def api_get_comments(request):
+    try:
+        recipe_id = request.data.get('recipe_id')
+        comments = Comments.objects.filter(recipe=recipe_id).order_by('-id')
+        serialized_comments = CommentsSerializer(comments, many=True)
+        return Response({'Comments': serialized_comments.data}, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+

@@ -37,8 +37,8 @@ urlpatterns = [
 
 
     #COMMENTS
-    path('api/comment/add/', views.api_add_comment, name='api_add_comment'),
-    path('api/comment/delete/', views.api_remove_comment, name='api_remove_comment'),
-    path('api/comment/modify/', views.api_modify_comment, name="api_modify_comment"),
-    path('api/comment/get/', views.api_get_comments, name='api_get_comments')
+    path('api/recipe/comments/', views.api_get_comments, name='api_get_comments'),
+    path('api/recipe/comment/add/', views.api_add_comment, name='api_add_comment'),
+    path('api/recipe/comment/delete/', views.api_remove_comment, name='api_remove_comment'),
+    path('api/recipe/comment/modify/', views.api_modify_comment, name="api_modify_comment"),
 ]
