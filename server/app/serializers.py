@@ -5,7 +5,7 @@ from .models import Users, Comments, Categories, Recipes, Favorites, Ingredients
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
-        fields = ['user_id', 'nickname', 'email', 'password', 'is_moderator', 'registration_date']
+        fields = ['user_id', 'nickname', 'email', 'is_moderator', 'registration_date']
         read_only_fields = ['registration_date']
 
 

@@ -466,8 +466,7 @@ def api_set_moderator(request):
 
         user = get_object_or_404(Users, user_id=user_id)
 
-        # Fix the logic here
-        user.is_moderator = user_status  # Assign the value directly
+        user.is_moderator = user_status 
 
         user.save()
 
