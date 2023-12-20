@@ -16,7 +16,6 @@ urlpatterns = [
     path('api/recipe/delete/', views.api_delete_recipe, name="api_delete_recipe"),
 
 
-
     #CATEGORIES
     path('api/categories/', views.api_load_recipe_categories, name='api_load_recipe_categories'),
     path('api/category/add/', views.api_add_category, name='api_add_category'),
@@ -32,10 +31,14 @@ urlpatterns = [
 
 
     #FAVORITES
-    path('api/recipe/favorites/', views.api_add_favorite, name='api_add_favorite'),
+    path('api/recipe/favorites/', views.api_load_favorites, name='api_add_favorite'),
+    path('api/recipe/favorite/add/', views.api_add_favorite, name='api_add_favorite'),
+    path('api/recipe/favorite/delete/', views.api_remove_favorite, name='api_add_favorite'),
+
 
     #COMMENTS
     path('api/comment/add/', views.api_add_comment, name='api_add_comment'),
-    path('api/comment/delete/<int:comment_id>/', views.api_remove_comment, name='api_remove_comment'),
-    path('api/comment/get/<int:recipe_id>/', views.api_get_comments, name='api_get_comments')
+    path('api/comment/delete/', views.api_remove_comment, name='api_remove_comment'),
+    path('api/comment/modify/', views.api_modify_comment, name="api_modify_comment"),
+    path('api/comment/get/', views.api_get_comments, name='api_get_comments')
 ]

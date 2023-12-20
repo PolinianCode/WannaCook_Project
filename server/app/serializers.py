@@ -12,7 +12,9 @@ class UsersSerializer(serializers.ModelSerializer):
 class CommentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comments
-        fields = '__all__'
+        fields = ['id', 'recipe', 'user', 'comment_text', 'comment_date']
+        read_only_fields = ['comment_date']
+
 
 
 class CategoriesSerializer(serializers.ModelSerializer):

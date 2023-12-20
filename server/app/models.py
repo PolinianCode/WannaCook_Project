@@ -6,6 +6,8 @@ class Categories(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255, unique=True)
 
+    
+
 # User Model (done)
 class Users(models.Model):
     user_id = models.AutoField(primary_key=True)
@@ -50,6 +52,14 @@ class Comments(models.Model):
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
     comment_text = models.TextField()
     comment_date = models.DateField()
+
+# Rating Model (done)
+class Ratings(models.Model):
+    user = models.ForeignKey(Users, primary_key=True, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE)
+    value = models.IntegerField()
+
+
 
 # Favorites Model (done)
 class Favorites(models.Model):

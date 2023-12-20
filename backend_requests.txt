@@ -18,7 +18,7 @@ POST: localhsot:8000/api/user/create/
 GET: localhost:8000/api/user/get/
 
 {
-   "username": "",
+   "nickname": "",
    "password": ""
 }
 
@@ -28,7 +28,7 @@ GET: localhost:8000/api/user/get/
 DELETE: localhost:8000/api/user/delete/
 
 {
-    "username": ""
+    "nickname": ""
 }
 
 
@@ -46,3 +46,81 @@ POST: localhost:8000/api/recipe/add/
   "rating_sum": 0,
   "rating_num": 0
 }
+
+
+6) Remove recipe
+
+DELETE: localhost:8000/api/recipe/delete
+
+{
+   "recipe_id": 
+}
+
+
+7) Modify recipe
+
+PUT: localhost:8000/api/recipe/modify/
+
+{
+    "recipe_id": ,
+    "category": ,
+    "title": "",
+    "description": "",
+    "instruction": ""
+}
+
+8)Get all categories
+
+GET: localhost:8000/api/categories/
+
+
+
+9) Add favorites
+POST: localhost:8000/api/recipe/favorites/add/
+
+{
+    "recipe": 8,
+    "user": 10
+}
+
+
+10) Remove favorites
+
+DELETE: localhost:8000/api/recipe/favorites/delete/
+
+{
+    "recipe": 8,
+    "user": 10
+}
+
+
+11)Add comment
+
+POST localhost:8000/api/comment/add/
+
+{
+	"user": ,
+	"recipe": ,
+	"comment_text": ""
+}
+
+
+12) Delete Comment
+
+DELETE localhost:8000/api/comment/delete/
+
+{
+	"comment_id": 
+}
+
+
+13) Comment modify
+
+PUT localhost:8000/api/comment/modify/
+
+{
+	"comment_id": ,
+	"comment_text": ""
+}
+
+
