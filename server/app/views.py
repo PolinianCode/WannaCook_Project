@@ -54,7 +54,7 @@ def api_add_user(request):
         print(e)
         return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-
+# Get user data
 @api_view(['GET'])
 @csrf_exempt
 def api_get_user(request):
@@ -88,6 +88,36 @@ def api_remove_user(request):
         return Response({"message": f"User {username} doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
 
 
+@csrf_exempt
+@api_view(['PUT'])
+def api_modify_user(request):
+    try:
+        user_id = request.data.get("user_id")
+
+        if user_id is None:
+            return Response({"message": "Missing parameter"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = get_object_or_404(Users, user_id=user_id)
+
+
+        data = request.data
+        nickname_data = data.get('nickname', user.nickname)
+        email_data = data.get('email', user.email)
+
+
+        user.nickname = nickname_data
+        user.email = email_data
+
+
+        user.save()
+
+        return Response({"message": f"User {user_id} has been modified successfully"}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        print(e)
+        return Response({"message": f"User modification failed: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 # --------------------- RECIPE ---------------------
 # This section contains API endpoints related to recipe operations.
 
@@ -114,8 +144,11 @@ def api_add_recipe(request):
 # Modify Recipe
 @csrf_exempt
 @api_view(['PUT'])
-def api_modify_recipe(request, recipe_id):
+def api_modify_recipe(request):
     try:
+
+        recipe_id = request.data.get("recipe_id")
+
         recipe = get_object_or_404(Recipes, pk=recipe_id)
         serializer = RecipesSerializer(recipe, data=request.data, partial=True)
 
@@ -164,6 +197,18 @@ def api_load_recipe_categories(request):
 @csrf_exempt
 def api_add_favorite(request):
     try:
+
+
+        user_id = request.data.get('user')
+        recipe_id = request.data.get('recipe')
+
+        if user_id is None or recipe_id is None:
+            return Response({"message": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if Favorites.objects.filter(user=user_id, recipe=recipe_id).exists():
+            return Response({"message": "Favorite already exists"}, status=status.HTTP_400_BAD_REQUEST)
+        
+
         serializer = FavoritesSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -175,13 +220,13 @@ def api_add_favorite(request):
 
 
 # Remove recipe from favorites
-@api_view(['POST'])
+@api_view(['DELETE'])
 @csrf_exempt
 def api_remove_favorite(request):
     try:
 
-        user_id = request.data.get('user_id')
-        recipe_id = request.data.get('recipe_id')
+        user_id = request.data.get('user')
+        recipe_id = request.data.get('recipe')
 
 
         if user_id is None or recipe_id is None:
@@ -189,23 +234,33 @@ def api_remove_favorite(request):
 
         favorite = Favorites.objects.filter(user = user_id, recipe = recipe_id)
 
-        favorite.delete()
+        if favorite:
+            favorite.delete()
+        else:
+            return Response({"message": f"Favorite for user {user_id} and recipe {recipe_id} has not been deleted."}, status=status.HTTP_404_NOT_FOUND)
+        
 
-        return Response({"message": f"Favorite for user {user_id} and recipe {recipe_id} has been deleted."}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": f"Favorite for user {user_id} and recipe {recipe_id} has been deleted."}, status=status.HTTP_200_OK)
 
     except Exception as e:
         print(e)
-        return Response({"message": f"Favorite for user {user_id} and recipe {recipe_id} has been deleted."}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"message": f"Favorite for user {user_id} and recipe {recipe_id} has not been deleted."}, status=status.HTTP_404_NOT_FOUND)
 
 # Add comment to recipe
 @api_view(['POST'])
 @csrf_exempt
 def api_add_comment(request):
     try:
+
+        current_datetime = timezone.now()
+        formatted_datetime = current_datetime.strftime("%Y-%m-%d")
+
         serializer = CommentsSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.validated_data['comment_date'] = formatted_datetime
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Comment added successfully"}, status=status.HTTP_201_CREATED)
+            return Response({"message": "Comment added successfully"}, status=status.HTTP_200_OK)
         return Response({"message": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         print(e)
@@ -216,8 +271,10 @@ def api_add_comment(request):
 # Remove comment from recipe
 @api_view(['DELETE'])
 @csrf_exempt
-def api_remove_comment(request, comment_id):
+def api_remove_comment(request):
     try:
+        comment_id = request.data.get("comment_id")
+
         comment = get_object_or_404(Comments, pk=comment_id)
         comment.delete()
 
@@ -231,8 +288,13 @@ def api_remove_comment(request, comment_id):
 # Edit comment 
 @api_view(['PUT'])
 @csrf_exempt
-def api_modify_comment(request, comment_id):
+def api_modify_comment(request):
     try:
+        comment_id = request.data.get("comment_id")  
+
+        if comment_id is None:
+            return Response({"message": "Comment ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
         comment = get_object_or_404(Comments, pk=comment_id)
 
         data = request.data
