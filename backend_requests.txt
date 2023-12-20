@@ -2,59 +2,47 @@
 GET: localhost:8000/api/users/
 
 
-2)Create new user
-POST: localhost:8000/api/user/create/
+2)Add new user
+
+POST: localhsot:8000/api/user/create/
+
 {
-  "nickname": "user",
-	"email": "test@gmail.com",
-	"password": "12345",
-	"is_moderator": 0
+  "nickname": "",
+  "email": "",
+  "password": "",
+  "is_moderator": 0
 }
 
-3) Delete user
+3)Get User
 
-POST: localhost:8000/api/user/delete/<str: username>/
+GET: localhost:8000/api/user/get/
 
-4)Recipe add
-POST: http://localhost:8000/api/recipe/add/
 {
-  "title": "Recipe Title",
-  "description": "Lorem ipsum dolor sit amet",
-  "instruction": "Instruction",
-  "user_id": 4,
-  "category_id": 1
+   "username": "",
+   "password": ""
 }
 
-5)Recipe modify
 
-PUT: http://localhost:8000/api/recipe/modify/<int:recipe_id>/
+4)Remove user
 
-{
-  "title": "Recipe Titlee",
-  "description": "Lorem ipsum dolor sit amet",
-  "instruction": "Instruction",
-  "user_id": 4,
-	"category_id": 2
-}
-
-6) Recipe delete
-
-GET: http://localhost:8000/api/recipe/delete/<int:recipe_id>/
-
-
-
-7) Get categories
-GET: localhost:8000/api/categories/
-
-
-8) Add recipe to favourites
-
-POST: http://localhost:8000/api/recipe/favorites/
+DELETE: localhost:8000/api/user/delete/
 
 {
- 	"recipe_id": 5,
-	"user_id": 5
+    "username": ""
 }
 
 
 
+5)Add recipe
+
+POST: localhost:8000/api/recipe/add/
+
+{
+  "user": ,
+  "category": ,
+  "title": "",
+  "description": "",
+  "instruction": "", 
+  "rating_sum": 0,
+  "rating_num": 0
+}

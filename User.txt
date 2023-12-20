@@ -1,0 +1,32 @@
+User
+
+-rejestracja
+-logowanie
+-usuwanie
+-blokowanie
+
+
+Recipe
+-add
+-modify
+-remove
+-rate
+-favorite (add ,remove)
+
+Comments
+-add
+-modify
+-delete
+-filtration before post 
+
+
+
+Search
+-categories
+-ingredient
+-search
+
+
+moderator
+-delete comments
+-ban users
