@@ -13,7 +13,7 @@ POST: localhost:8000/api/user/create/
 
 3) Delete user
 
-POST: localhost:8000/api/user/delete/<str: username>/
+DELETE: localhost:8000/api/user/delete/<str: username>/
 
 4)Recipe add
 POST: http://localhost:8000/api/recipe/add/

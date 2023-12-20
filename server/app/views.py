@@ -52,6 +52,23 @@ def api_add_user(request):
         return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 
+@api_view(['POST'])
+@csrf_exempt
+def api_get_user(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+
+    if not username or not password:
+        return Response({"error": "Invalid username or password"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    user = Users.objects.filter(username=username, password=password)
+
+
+    if user is not None:
+        return Response({"message": "Login successfull"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "Invalid username or password"}, status=status.HTTP_401_UNAUTHORIZED)  
+
 # Remove a user from the database by nickname.
 @api_view(['DELETE'])
 @csrf_exempt
@@ -179,6 +196,7 @@ def api_load_recipe_categories(request):
     serialized_categories = CategoriesSerializer(all_categories, many=True)
     return Response({'Categories': serialized_categories.data}, status=status.HTTP_200_OK)
 
+# Add recipe to favorites 
 @api_view(['POST'])
 @csrf_exempt
 def api_add_favorite(request):
@@ -204,6 +222,29 @@ def api_add_favorite(request):
     except Exception as e:
         print(e)
         return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# Remove recipe from favorites
+@api_view(['POST'])
+@csrf_exempt
+def api_remove_favorite(request):
+    try:
+
+        user_id = request.data.get('user_id')
+        recipe_id = request.data.get('recipe_id')
+
+
+        if user_id is None or recipe_id is None:
+            return Response({"message": "Favorite remove error"}, status=status.HTTP_400_BAD_REQUEST)
+
+        favorite = Favorites.objects.filter(user = user_id, recipe = recipe_id)
+
+        favorite.delete()
+
+        return Response({"message": f"Favorite for user {user_id} and recipe {recipe_id} has been deleted."}, status=status.HTTP_204_NO_CONTENT)
+
+    except Exception as e:
+        print(e)
+        return Response({"message": f"Favorite for user {user_id} and recipe {recipe_id} has been deleted."}, status=status.HTTP_404_NOT_FOUND)
 
 @csrf_exempt
 @api_view(['POST'])
