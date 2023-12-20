@@ -29,6 +29,22 @@ class Recipes(models.Model):
     rating_sum = models.IntegerField()
     rating_num = models.IntegerField()
 
+class Ingredients(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+
+class RecipeIngredient(models.Model):
+    recipe_id = models.ForeignKey(Recipes, on_delete=models.CASCADE)
+    ingredient_id = models.ForeignKey(Ingredients, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    unit = models.CharField(max_length=20)
+
+# Rating Model (done)
+class Ratings(models.Model):
+    user = models.ForeignKey(Users, primary_key=True, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE)
+    value = models.IntegerField()
+
 # Comments Model (done)
 class Comments(models.Model):
     id = models.AutoField(primary_key=True)
@@ -49,4 +65,5 @@ class Ratings(models.Model):
 class Favorites(models.Model):
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE)
+
 
