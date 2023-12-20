@@ -18,7 +18,7 @@ POST: localhsot:8000/api/user/create/
 GET: localhost:8000/api/user/get/
 
 {
-   "username": "",
+   "nickname": "",
    "password": ""
 }
 
@@ -28,7 +28,7 @@ GET: localhost:8000/api/user/get/
 DELETE: localhost:8000/api/user/delete/
 
 {
-    "username": ""
+    "nickname": ""
 }
 
 

@@ -58,7 +58,7 @@ def api_add_user(request):
 @api_view(['GET'])
 @csrf_exempt
 def api_get_user(request):
-    username = request.data.get('username')
+    username = request.data.get('nickname')
     password = request.data.get('password')
 
     if not username or not password:
@@ -78,7 +78,7 @@ def api_get_user(request):
 def api_remove_user(request):
     try:
 
-        username = request.data.get('username')
+        username = request.data.get('nickname')
 
         user = get_object_or_404(Users, nickname=username)
         user.delete()
