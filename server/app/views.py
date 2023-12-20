@@ -4,7 +4,7 @@ from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from .models import Recipes, Users, Categories, Favorites, Comments, Ingredients, RecipeIngredient
-from .serializers import UsersReadSerializer, UsersWriteSerializer, CommentsSerializer, CategoriesSerializer, RecipesSerializer, FavoritesSerializer, IngredientsSerializer
+from .serializers import UsersReadSerializer, UsersWriteSerializer, CommentsSerializer, CategoriesSerializer, RecipesSerializer, FavoritesSerializer, IngredientsSerializer, RecipeIngredientSerializer
 from rest_framework import status
 from .utils import is_user_exists, is_email_taken, is_favorite_exists
 from django.shortcuts import get_object_or_404
@@ -128,15 +128,23 @@ def api_modify_user(request):
 @csrf_exempt
 def api_add_recipe(request):
     try:
-
         current_datetime = timezone.now()
         formatted_datetime = current_datetime.strftime("%Y-%m-%d")
+
+        ingredients_data = request.data.get('ingredients', [])
 
         serializer = RecipesSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.validated_data['created_date'] = formatted_datetime
         if serializer.is_valid():
-            serializer.save()
+            recipe_instance = serializer.save()  # Save the instance and get the object back
+
+            for ingredient_data in ingredients_data:
+                ingredient_data['recipe'] = recipe_instance.recipe_id  # Use recipe_instance.recipe_id
+                ingredient_serializer = RecipeIngredientSerializer(data=ingredient_data)
+                ingredient_serializer.is_valid(raise_exception=True)
+                ingredient_serializer.save()
+
             return Response({"message": "The recipe has been added successfully"}, status=status.HTTP_201_CREATED)
         return Response({"message": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
