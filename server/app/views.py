@@ -236,7 +236,7 @@ def api_delete_category(request):
 
 
 
-# Add recipe to favorites
+
 
 # --------------------- INGREDIENTS ---------------------
 @api_view(['GET'])
@@ -279,6 +279,8 @@ def api_delete_ingredient(request):
     
 
 # --------------------- SEARCH ---------------------
+    
+# Serach recipes
 @api_view(['GET'])
 @csrf_exempt
 def api_search_recipes(request):
@@ -320,6 +322,7 @@ def api_load_favorites(request):
         print(e)
         return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+# Add recipe to favorites
 @api_view(['POST'])
 @csrf_exempt
 def api_add_favorite(request):
@@ -343,7 +346,7 @@ def api_add_favorite(request):
         print(e)
         return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
+# Remove recipe to favorites
 @api_view(['DELETE'])
 @csrf_exempt
 def api_remove_favorite(request):
@@ -446,4 +449,33 @@ def api_get_comments(request):
     except Exception as e:
         print(e)
         return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+# --------------------- Moderator ---------------------
+    
+@api_view(['PUT'])
+@csrf_exempt
+def api_set_moderator(request):
+    try:
+        user_id = request.data.get("user_id")
+        user_status = request.data.get("status")
+
+        if user_id is None:
+            return Response({"error": "Missing user id"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = get_object_or_404(Users, user_id=user_id)
+
+        user.is_moderator = user_status 
+
+        user.save()
+
+        if user_status:
+            return Response({"message": f"User {user_id} upgraded to moderator"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": f"User {user_id} downgraded to user"}, status=status.HTTP_200_OK)
+
+    except Users.DoesNotExist:
+        return Response({"error": f"User with ID {user_id} does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
 
