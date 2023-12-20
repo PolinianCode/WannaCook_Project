@@ -1,3 +1,7 @@
+<<<<<<< HEAD
 **/settings.py
 
 **/__pycache__
+=======
+server/server/settings.py
+>>>>>>> 7e575bf2312105a5234d9e9dfa05801e63cfd65d
