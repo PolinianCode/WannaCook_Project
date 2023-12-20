@@ -20,6 +20,7 @@ urlpatterns = [
     #CATEGORIES
     path('api/categories/', views.api_load_recipe_categories, name='api_load_recipe_categories'),
     path('api/category/add/', views.api_add_category, name='api_add_category'),
+    path('api/category/delete/', views.api_delete_category, name='api_delete_category'),
 
     #INGREDIENTS
     path('api/ingredients/', views.api_load_recipe_ingredients, name='api_load_recipe_ingredients'),

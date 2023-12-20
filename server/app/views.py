@@ -3,11 +3,12 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-from .models import Recipes, Users, Categories, Favorites, Comments
-from .serializers import UsersSerializer, CommentsSerializer, CategoriesSerializer, RecipesSerializer, FavoritesSerializer
+from .models import Recipes, Users, Categories, Favorites, Comments, Ingredients, RecipeIngredient
+from .serializers import UsersSerializer, CommentsSerializer, CategoriesSerializer, RecipesSerializer, FavoritesSerializer, IngredientsSerializer
 from rest_framework import status
 from .utils import is_user_exists, is_email_taken, is_favorite_exists
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 # --------------------- USER ---------------------
 # This section contains API endpoints related to user operations.
@@ -112,6 +113,19 @@ def api_add_recipe(request):
         print(e)
         return Response({"message": f"Recipe couldn't be added: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+@api_view(['GET'])
+@csrf_exempt
+def api_get_recipe(request):
+    try:
+        recipe_id = request.data.get('recipe_id')
+        recipe = get_object_or_404(Recipes, recipe_id=recipe_id)
+        serializer = RecipesSerializer(recipe)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response({"message": f"Recipe {recipe_id} doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
+
 # Modify Recipe
 @csrf_exempt
 @api_view(['PUT'])
@@ -148,7 +162,7 @@ def api_delete_recipe(request):
 
 
 
-# --------------------- UTILS ---------------------
+# --------------------- CATEGORIES ---------------------
 # This section contains API endpoints related to user/recipe utils.
 
 
@@ -159,6 +173,35 @@ def api_load_recipe_categories(request):
     all_categories = Categories.objects.order_by('-id')
     serialized_categories = CategoriesSerializer(all_categories, many=True)
     return Response({'Categories': serialized_categories.data}, status=status.HTTP_200_OK)
+
+
+@csrf_exempt
+@api_view(['POST'])
+def api_add_category(request):
+    try:
+        serializer = CategoriesSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Category added successfully"}, status=status.HTTP_201_CREATED)
+        return Response({"message": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        print(e)
+        return Response({"message": f"Category couldn't be added: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@csrf_exempt
+@api_view(['DELETE'])
+def api_delete_category(request):
+    try:
+        category_id = request.data.get('category_id')
+        category = get_object_or_404(Categories, id=category_id)
+        category.delete()
+        return Response({"message": f"Category {category_id} has been deleted."}, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response({"message": f"Category {category_id} doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
+
+
 
 # Add recipe to favorites
 @api_view(['POST'])
@@ -174,7 +217,67 @@ def api_add_favorite(request):
         print(e)
         return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+# --------------------- INGREDIENTS ---------------------
+@api_view(['GET'])
+@csrf_exempt    
+def api_load_recipe_ingredients(request):
+    try:
+        recipe_id = request.data.get('recipe_id')
+        ingredients = Ingredients.objects.order_by('-id')
+        serialized_ingredients = IngredientsSerializer(ingredients, many=True)
+        return Response({'Ingredients': serialized_ingredients.data}, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+@api_view(['POST'])
+@csrf_exempt
+def api_add_ingredient(request):
+    try:
+        serializer = IngredientsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Ingredient added successfully"}, status=status.HTTP_201_CREATED)
+        return Response({"message": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        print(e)
+        return Response({"message": f"Ingredient couldn't be added: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['DELETE'])
+@csrf_exempt
+def api_delete_ingredient(request):
+    try:
+        ingredient_id = request.data.get('ingredient_id')
+        ingredient = get_object_or_404(Ingredients, id=ingredient_id)
+        ingredient.delete()
+        return Response({"message": f"Ingredient {ingredient_id} has been deleted."}, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response({"message": f"Ingredient {ingredient_id} doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
+    
+
+# --------------------- SEARCH ---------------------
+@api_view(['GET'])
+@csrf_exempt
+def api_search_recipes(request):
+    try:
+        query = request.data.get('query')
+        recipes = Recipes.objects.filter(
+            Q(name__icontains=query) & 
+            Q(user__icontains=query) & 
+            Q(category__icontains=query) & 
+            Q(ingredients__icontains=query)
+        )
+        serialized_recipes = RecipesSerializer(recipes, many=True)
+        return Response({'Recipes': serialized_recipes.data}, status=status.HTTP_200_OK)
+    except Exception as e:
+        print(e)
+        return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# --------------------- FAVORITES ---------------------
 # Remove recipe from favorites
 @api_view(['POST'])
 @csrf_exempt
@@ -259,18 +362,6 @@ def api_get_comments(request, recipe_id):
 # --------------------- SEARCH ---------------------
 # This section contains API endpoints related to search function.
 
-@csrf_exempt
-@api_view(['POST'])
-def api_add_category(request):
-    try:
-        serializer = CategoriesSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Category added successfully"}, status=status.HTTP_201_CREATED)
-        return Response({"message": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
-    except Exception as e:
-        print(e)
-        return Response({"message": f"Category couldn't be added: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @csrf_exempt
 @api_view(['GET'])
