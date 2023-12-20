@@ -4,7 +4,7 @@ from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from .models import Recipes, Users, Categories, Favorites, Comments, Ingredients, RecipeIngredient
-from .serializers import UsersSerializer, CommentsSerializer, CategoriesSerializer, RecipesSerializer, FavoritesSerializer, IngredientsSerializer
+from .serializers import UsersReadSerializer, UsersWriteSerializer, CommentsSerializer, CategoriesSerializer, RecipesSerializer, FavoritesSerializer, IngredientsSerializer
 from rest_framework import status
 from .utils import is_user_exists, is_email_taken, is_favorite_exists
 from django.shortcuts import get_object_or_404
@@ -19,7 +19,7 @@ from django.db.models import Q
 @csrf_exempt
 def api_get_users(request):
     all_users = Users.objects.order_by('-user_id')
-    serialized_users = UsersSerializer(all_users, many=True)
+    serialized_users = UsersReadSerializer(all_users, many=True)
     return Response({'latest_users': serialized_users.data}, status=status.HTTP_200_OK)
 
 
@@ -45,7 +45,7 @@ def api_add_user(request):
         formatted_datetime = current_datetime.strftime("%Y-%m-%d")
         
 
-        serializer = UsersSerializer(data=request.data)
+        serializer = UsersWriteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.validated_data['registration_date'] = formatted_datetime
         if serializer.is_valid():

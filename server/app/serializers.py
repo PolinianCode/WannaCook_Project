@@ -2,12 +2,16 @@ from rest_framework import serializers
 from .models import Users, Comments, Categories, Recipes, Favorites, Ingredients
 
 
-class UsersSerializer(serializers.ModelSerializer):
+class UsersWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
         fields = ['user_id', 'nickname', 'email', 'password', 'is_moderator', 'registration_date']
         read_only_fields = ['registration_date']
 
+class UsersReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Users
+        exclude = ['password']
 
 class CommentsSerializer(serializers.ModelSerializer):
     class Meta:
