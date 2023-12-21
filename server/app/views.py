@@ -3,13 +3,13 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-from .models import Recipes, Users, Categories, Favorites, Comments, Ingredients, Ratings
-from .serializers import UsersReadSerializer, UsersWriteSerializer, CommentsSerializer, CategoriesSerializer, RecipesSerializer, FavoritesSerializer, IngredientsSerializer, RatingsSerializer
+from .models import Recipes, Users, Categories, Favorites, Comments, Ingredients, Ratings, RecipeIngredient
+from .serializers import UsersReadSerializer, UsersWriteSerializer, CommentsSerializer, CategoriesSerializer, RecipesSerializer, FavoritesSerializer, IngredientsSerializer, RatingsSerializer, RecipeIngredientSerializer
 from rest_framework import status
 from .utils import is_user_exists, is_email_taken, is_favorite_exists
 from django.shortcuts import get_object_or_404
 from django.db.models import F, Q
-
+from django.db import transaction
 # --------------------- USER ---------------------
 # This section contains API endpoints related to user operations.
 
@@ -128,17 +128,25 @@ def api_modify_user(request):
 @csrf_exempt
 def api_add_recipe(request):
     try:
-
         current_datetime = timezone.now()
         formatted_datetime = current_datetime.strftime("%Y-%m-%d")
+
+        ingredients_data = request.data.get('ingredients', [])
 
         serializer = RecipesSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.validated_data['created_date'] = formatted_datetime
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "The recipe has been added successfully"}, status=status.HTTP_201_CREATED)
-        return Response({"message": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
+        with transaction.atomic():
+            if serializer.is_valid():
+                recipe_instance = serializer.save()
+
+                for ingredient_data in ingredients_data:
+                    ingredient_data['recipe'] = recipe_instance.recipe_id  
+                    ingredient_serializer = RecipeIngredientSerializer(data=ingredient_data)
+                    ingredient_serializer.is_valid(raise_exception=True)
+                    ingredient_serializer.save()
+
+            return Response({"message": "The recipe has been added successfully"}, status=status.HTTP_200_OK)
     except Exception as e:
         print(e)
         return Response({"message": f"Recipe couldn't be added: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -151,7 +159,17 @@ def api_get_recipe(request):
         recipe_id = request.data.get('recipe_id')
         recipe = get_object_or_404(Recipes, recipe_id=recipe_id)
         serializer = RecipesSerializer(recipe)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        # Get ingredients associated with the recipe
+        ingredients = RecipeIngredient.objects.filter(recipe=recipe)
+        ingredients_serializer = RecipeIngredientSerializer(ingredients, many=True)
+
+        response_data = {
+            "recipe": serializer.data,
+            "ingredients": ingredients_serializer.data
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
     except Exception as e:
         print(e)
         return Response({"message": f"Recipe {recipe_id} doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
@@ -161,15 +179,25 @@ def api_get_recipe(request):
 @api_view(['PUT'])
 def api_modify_recipe(request):
     try:
-
         recipe_id = request.data.get("recipe_id")
 
         recipe = get_object_or_404(Recipes, pk=recipe_id)
-        serializer = RecipesSerializer(recipe, data=request.data, partial=True)
 
+        RecipeIngredient.objects.filter(recipe=recipe).delete()
+
+        serializer = RecipesSerializer(recipe, data=request.data, partial=True)
         if serializer.is_valid():
-            serializer.save()
+            recipe_instance = serializer.save()
+
+            ingredients_data = request.data.get('ingredients', [])
+            for ingredient_data in ingredients_data:
+                ingredient_data['recipe'] = recipe_instance.recipe_id
+                ingredient_serializer = RecipeIngredientSerializer(data=ingredient_data)
+                ingredient_serializer.is_valid(raise_exception=True)
+                ingredient_serializer.save()
+
             return Response({"message": "The recipe has been modified successfully"}, status=status.HTTP_200_OK)
+
         return Response({"error": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         print(e)
@@ -179,17 +207,20 @@ def api_modify_recipe(request):
 @csrf_exempt
 @api_view(['DELETE'])
 def api_delete_recipe(request):
-     try:
-
+    try:
         recipe_id = request.data.get('recipe_id')
 
         recipe = get_object_or_404(Recipes, recipe_id=recipe_id)
 
+        # Get and delete associated ingredients
+        ingredients = RecipeIngredient.objects.filter(recipe=recipe)
+        ingredients.delete()
+
         recipe.delete()
 
-        return Response({"message": f"Recipe {recipe_id} has been deleted."}, status=status.HTTP_200_OK)
+        return Response({"message": f"Recipe {recipe_id} and its ingredients have been deleted."}, status=status.HTTP_200_OK)
 
-     except Exception as e:
+    except Exception as e:
         print(e)
         return Response({"message": f"Recipe {recipe_id} doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
 

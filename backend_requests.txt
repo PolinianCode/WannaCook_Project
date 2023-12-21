@@ -192,3 +192,14 @@ PUT localhost:8000/api/comment/modify/
 14) Comment Get
 GET: localhost:8000/api/recipe/comments/
 
+15)Rating add
+POST: localhost:8000/api/recipe/rating/add/
+
+{
+  "user":3,
+  "recipe":4,
+  "value":3
+}
+
+16)Rating remove
+DELETE:

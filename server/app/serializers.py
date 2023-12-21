@@ -1,11 +1,11 @@
 from rest_framework import serializers
-from .models import Users, Comments, Categories, Recipes, Favorites, Ingredients, Ratings
+from .models import Users, Comments, Categories, Recipes, Favorites, Ingredients, Ratings, RecipeIngredient
 
 
 class UsersWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
-        fields = ['user_id', 'nickname', 'email', 'is_moderator', 'registration_date']
+        fields = ['user_id', 'nickname', 'email', 'password', 'is_moderator', 'registration_date']
         read_only_fields = ['registration_date']
 
 class UsersReadSerializer(serializers.ModelSerializer):
@@ -48,3 +48,8 @@ class RatingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ratings
         fields = '__all__'
+        
+class RecipeIngredientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecipeIngredient
+        fields = ['recipe','ingredient', 'quantity', 'unit']

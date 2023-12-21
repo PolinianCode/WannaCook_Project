@@ -34,8 +34,8 @@ class Ingredients(models.Model):
     name = models.CharField(max_length=100)
 
 class RecipeIngredient(models.Model):
-    recipe_id = models.ForeignKey(Recipes, on_delete=models.CASCADE)
-    ingredient_id = models.ForeignKey(Ingredients, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredients, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     unit = models.CharField(max_length=20)
 
