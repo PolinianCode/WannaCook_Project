@@ -7,6 +7,7 @@ urlpatterns = [
     path('api/user/create/', views.api_add_user, name='api_add_user'),
     path('api/user/get/', views.api_get_user, name='api_get_user'),
     path('api/user/delete/', views.api_remove_user, name='api_remove_user'),
+    path('api/user/modify/', views.api_modify_user, name="api_modify_user"),
 
 
     #RECIPE
@@ -44,8 +45,6 @@ urlpatterns = [
     path('api/recipe/comment/add/', views.api_add_comment, name='api_add_comment'),
     path('api/recipe/comment/delete/', views.api_remove_comment, name='api_remove_comment'),
     path('api/recipe/comment/modify/', views.api_modify_comment, name="api_modify_comment"),
-
-
 
 
     #Moderator

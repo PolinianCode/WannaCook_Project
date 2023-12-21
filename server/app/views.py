@@ -6,10 +6,12 @@ from django.utils import timezone
 from .models import Recipes, Users, Categories, Favorites, Comments, Ingredients, Ratings, RecipeIngredient
 from .serializers import UsersReadSerializer, UsersWriteSerializer, CommentsSerializer, CategoriesSerializer, RecipesSerializer, FavoritesSerializer, IngredientsSerializer, RatingsSerializer, RecipeIngredientSerializer
 from rest_framework import status
-from .utils import is_user_exists, is_email_taken, is_favorite_exists
+from .utils import is_user_exists, is_email_taken
 from django.shortcuts import get_object_or_404
 from django.db.models import F, Q
 from django.db import transaction
+
+
 # --------------------- USER ---------------------
 # This section contains API endpoints related to user operations.
 
@@ -20,7 +22,7 @@ from django.db import transaction
 def api_get_users(request):
     all_users = Users.objects.order_by('-user_id')
     serialized_users = UsersReadSerializer(all_users, many=True)
-    return Response({'latest_users': serialized_users.data}, status=status.HTTP_200_OK)
+    return Response({'users': serialized_users.data}, status=status.HTTP_200_OK)
 
 
 # Add a new user to the database.
@@ -50,7 +52,7 @@ def api_add_user(request):
         serializer.validated_data['registration_date'] = formatted_datetime
         if serializer.is_valid():
             serializer.save()
-            return Response({'message': 'User has been created!'}, status=status.HTTP_201_CREATED)
+            return Response({'message': 'User has been created!'}, status=status.HTTP_200_OK)
         return Response({'error': 'Invalid data provided'}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         print(e)
@@ -84,7 +86,7 @@ def api_remove_user(request):
 
         user = get_object_or_404(Users, nickname=username)
         user.delete()
-        return Response({"message": f"User {username} has been deleted."})
+        return Response({"message": f"User {username} has been deleted."}, status=status.HTTP_200_OK)
     except Exception as e:
         print(e)
         return Response({"message": f"User {username} doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
@@ -151,7 +153,7 @@ def api_add_recipe(request):
         print(e)
         return Response({"message": f"Recipe couldn't be added: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
+#Get recipe data by id
 @api_view(['GET'])
 @csrf_exempt
 def api_get_recipe(request):
@@ -212,7 +214,6 @@ def api_delete_recipe(request):
 
         recipe = get_object_or_404(Recipes, recipe_id=recipe_id)
 
-        # Get and delete associated ingredients
         ingredients = RecipeIngredient.objects.filter(recipe=recipe)
         ingredients.delete()
 
@@ -246,7 +247,7 @@ def api_add_category(request):
         serializer = CategoriesSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Category added successfully"}, status=status.HTTP_201_CREATED)
+            return Response({"message": "Category added successfully"}, status=status.HTTP_200_OK)
         return Response({"message": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         print(e)
@@ -289,7 +290,7 @@ def api_add_ingredient(request):
         serializer = IngredientsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Ingredient added successfully"}, status=status.HTTP_201_CREATED)
+            return Response({"message": "Ingredient added successfully"}, status=status.HTTP_200_OK)
         return Response({"message": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         print(e)
@@ -344,8 +345,8 @@ def api_search_recipes(request):
 @csrf_exempt
 def api_add_rating(request):
     try:
-        user_id = request.data.get('user')
-        recipe_id = request.data.get('recipe')
+        user_id = request.data.get('user_id')
+        recipe_id = request.data.get('recipe_id')
 
         if Ratings.objects.filter(user=user_id, recipe=recipe_id).exists():
             return Response({"message": "Rating already exists"}, status=status.HTTP_400_BAD_REQUEST)
@@ -360,7 +361,7 @@ def api_add_rating(request):
             recipe.rating_num = F('rating_num') + 1
             recipe.save()
 
-            return Response({"message": "Rating added successfully"}, status=status.HTTP_201_CREATED)
+            return Response({"message": "Rating added successfully"}, status=status.HTTP_200_OK)
         return Response({"message": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         print(e)
@@ -371,12 +372,10 @@ def api_add_rating(request):
 @csrf_exempt
 def api_remove_rating(request):
     try:
-        recipe_id = request.data.get('recipe')
-        user_id = request.data.get('user')
+        recipe_id = request.data.get('recipe_id')
+        user_id = request.data.get('user_id')
         
-        print("AAAAAA")
         rating_instance = Ratings.objects.get(Q(user = user_id) & Q(recipe = recipe_id))
-        print("AAAAAA")
         rating_instance.delete()
 
         recipe = Recipes.objects.get(recipe_id=recipe_id)
@@ -384,7 +383,7 @@ def api_remove_rating(request):
         recipe.rating_num = F('rating_num') - 1
         recipe.save()
 
-        return Response({"message": "Rating deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Rating deleted successfully"}, status=status.HTTP_200_OK)
     except Ratings.DoesNotExist:
         return Response({"message": "Rating not found"}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
@@ -397,7 +396,7 @@ def api_remove_rating(request):
 @csrf_exempt
 def api_load_favorites(request):
     try:
-        favorites = Favorites.objects.filter(user = request.data.get('user')).order_by('-id')
+        favorites = Favorites.objects.filter(user = request.data.get('user_id')).order_by('-id')
         serialized_favorites = FavoritesSerializer(favorites, many=True)
         return Response({'Favorites': serialized_favorites.data}, status=status.HTTP_200_OK)
     except Exception as e:
@@ -422,7 +421,7 @@ def api_add_favorite(request):
         serializer = FavoritesSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Recipe added to favorites successfully"}, status=status.HTTP_201_CREATED)
+            return Response({"message": "Recipe added to favorites successfully"}, status=status.HTTP_200_OK)
         return Response({"message": "Invalid data provided"}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         print(e)
