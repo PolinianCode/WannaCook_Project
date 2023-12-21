@@ -29,6 +29,9 @@ urlpatterns = [
     #SEARCH
     path('api/recipe/search/', views.api_search_recipes, name='api_search_recipes'),
 
+    #RATINGS
+    path('api/recipe/rating/add/', views.api_add_rating, name='api_add_rating'),
+    path('api/recipe/rating/delete/', views.api_remove_rating, name='api_remove_rating'),
 
     #FAVORITES
     path('api/recipe/favorites/', views.api_load_favorites, name='api_add_favorite'),

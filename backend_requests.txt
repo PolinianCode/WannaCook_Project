@@ -45,6 +45,10 @@ POST: localhost:8000/api/recipe/add/
   "instruction": "", 
   "rating_sum": 0,
   "rating_num": 0
+
+  "ingredients": [
+    {"ingredient_id":1, "quantity":2, "unit": "cups"},
+  ]
 }
 
 #)Get recipe
@@ -127,11 +131,18 @@ GET: localhost:8000/api/recipe/search/
 }
 
 
+
+
 #) Show user's favorites
-GET: localhost:8000/api/recipe/favorites
+GET: localhost:8000/api/recipe/favorites/
+
+{
+  "user":1
+}
+
 
 9) Add favorites
-POST: localhost:8000/api/recipe/favorites/add/
+POST: localhost:8000/api/recipe/favorite/add/
 
 {
     "recipe": 8,
@@ -141,7 +152,7 @@ POST: localhost:8000/api/recipe/favorites/add/
 
 10) Remove favorites
 
-DELETE: localhost:8000/api/recipe/favorites/delete/
+DELETE: localhost:8000/api/recipe/favorite/delete/
 
 {
     "recipe": 8,
@@ -178,4 +189,6 @@ PUT localhost:8000/api/comment/modify/
 	"comment_text": ""
 }
 
+14) Comment Get
+GET: localhost:8000/api/recipe/comments/
 
