@@ -186,12 +186,12 @@ POST: localhost:8000/api/recipe/favorite/add/
 DELETE: localhost:8000/api/recipe/favorite/delete/
 
 {
-    "recipe": 8,
-    "user": 10
+    "recipe_id": 8,
+    "user_id": 10
 }
 
 
-11)Add comment
+21)Add comment
 
 POST localhost:8000/api/comment/add/
 
@@ -201,8 +201,7 @@ POST localhost:8000/api/comment/add/
 	"comment_text": ""
 }
 
-
-12) Delete Comment
+22) Delete Comment
 
 DELETE localhost:8000/api/comment/delete/
 
@@ -211,7 +210,7 @@ DELETE localhost:8000/api/comment/delete/
 }
 
 
-13) Comment modify
+23) Comment modify
 
 PUT localhost:8000/api/comment/modify/
 
@@ -220,10 +219,18 @@ PUT localhost:8000/api/comment/modify/
 	"comment_text": ""
 }
 
-14) Comment Get
+24) Comment Get
 GET: localhost:8000/api/recipe/comments/
 
+{
+	"recipe_id": 4
+}
 
 
-16)Rating remove
-DELETE:
+25) Moderator set
+PUT: localhost:8000/api/moderator/add/
+
+{
+	"user_id":
+	"status" 1 or 0
+}
