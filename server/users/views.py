@@ -24,7 +24,7 @@ def api_get_users(request):
 # Add a new user to the database.
 @api_view(['POST'])
 @csrf_exempt
-def api_add_user(request):
+def api_register_user(request):
     try:
         username_data = request.data.get('nickname', '')
         email_data = request.data.get('email', '')
@@ -57,7 +57,7 @@ def api_add_user(request):
 # Get user data
 @api_view(['GET'])
 @csrf_exempt
-def api_get_user(request):
+def api_login_user(request):
     username = request.data.get('nickname')
     password = request.data.get('password')
 
@@ -118,3 +118,11 @@ def api_modify_user(request):
         return Response({"message": f"User modification failed: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@csrf_exempt
+@api_view(['POST'])
+def api_get_user(request):
+    id = request.data.get('user_id')
+
+    user = Users.objects.get(user_id = id)
+    serializedUser = UsersReadSerializer(user, many=False)
+    return Response({'User': serializedUser.data}, status=status.HTTP_200_OK)

@@ -112,3 +112,10 @@ def api_delete_recipe(request):
         print(e)
         return Response({"message": f"Recipe {recipe_id} doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
 
+#Get all recipes
+@csrf_exempt
+@api_view(['GET'])
+def api_get_recipes(request):
+    all_recipes = Recipes.objects.order_by("created_date")
+    serializedRecipes = RecipesSerializer(all_recipes, many=True)
+    return Response({'Recipes': serializedRecipes.data}, status=status.HTTP_200_OK)
