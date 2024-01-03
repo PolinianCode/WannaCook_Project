@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef  } from 'react';
 import { useRouter } from 'next/router';
 
 import styles from "@/app/components/componentsStyles/Search.module.css"
@@ -13,6 +13,8 @@ export default function Search () {
     const [ingredients, setIngredients] = useState([])
     const [selectedIngredients, setSelectedIngredient] = useState([])
 
+    const searchFilterRef = useRef(null);
+
     //Get ingredient from API 
     useEffect(() => {
         fetch('http://localhost:8000/api/ingredients/all/')
@@ -21,13 +23,28 @@ export default function Search () {
         .catch(error => console.error('Error getting ingredients:', error));
   }, []);
 
-  //Get Categories from API 
-  useEffect(() => {
+    //Get Categories from API 
+    useEffect(() => {
     fetch('http://localhost:8000/api/category/all/')
     .then(response => response.json())
     .then(data => setCategories(data.Categories || []))
     .catch(error => console.error('Error getting categories:', error));
-}, []);
+    }, []);
+
+    //Close additional div with filters
+    useEffect(() => {
+        const handleOutsideClick = (event) => {
+            if (searchFilterRef.current && !searchFilterRef.current.contains(event.target)) {
+                setShowAdditionalBlock(false);
+            }
+        };
+
+        document.addEventListener('click', handleOutsideClick);
+
+        return () => {
+            document.removeEventListener('click', handleOutsideClick);
+        };
+    }, []);
 
     const handleCategory = (category) => {
         const isSelectedCategory = selectedCategory === category
@@ -98,20 +115,23 @@ export default function Search () {
 
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
+        <div ref={searchFilterRef}>
+            <form onSubmit={handleSubmit} autoComplete="off">
                 <input type="text" 
                     placeholder="Recipes, categories, intgredients" 
                     name="search-bar"
-                    className={styles.main} 
+                    className={styles.searchField} 
                     onChange={handleChange}
                     onFocus={handleFocus}
+                    style = {{width: 400, backgroundColor: '#f7f7f7', borderColor: '#e0dede'}}
                 />
-                <button type="submit">Search</button>  
+                <button type="submit" className={styles.searchBtn}><svg width="16" height="10" fill="none" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg" class="searchInput_searchSvg__FzrRz"><path d="M10.04 2.5a7.539 7.539 0 1 1 0 15.079 7.539 7.539 0 0 1 0-15.078ZM15.725 15.724 22 22" stroke="#241F20" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>  
             </form>
 
             {showAdditionalBlock && (
                 <div className={styles.searchFilter}>
+
+
                     <h3>Search filters</h3>
                     <span>Categories</span>
                     <div className={styles.categoriesBlock}>
@@ -144,6 +164,8 @@ export default function Search () {
                             </div>
                         ))}
                     </div>
+
+
                 </div>
             )}
 
