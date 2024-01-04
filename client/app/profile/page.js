@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react";
-import Header from "./components/HeaderComponent"
-import Modal from "./components/dialogsComponents/ModalComponent";
-import AuthModal from "./components/dialogsComponents/AuthModalComponent";
+import Header from "@/app/components/HeaderComponent"
+import Modal from "@/app/components/dialogsComponents/ModalComponent";
+import AuthModal from "../components/dialogsComponents/AuthModalComponent";
 
 
 

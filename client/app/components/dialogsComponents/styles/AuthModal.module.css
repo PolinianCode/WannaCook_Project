@@ -1,0 +1,78 @@
+.authModalContent {
+    text-align: left;
+    padding: 20px;
+  }
+  
+  .tabBtn {
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 15px;
+    text-decoration: underline;
+    margin-top: 30px;
+  }
+  
+  .tabBtn:hover {
+    color: #0c0b07;
+  }
+  
+  .label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+  }
+  
+  .input:focus {
+    outline: none;
+    border-color: #f4d212;
+  }
+  
+  .loginBtn,
+  .registerBtn,
+  .forgotBtn {
+    background-color: #f4d212;
+    color: white;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+  
+  .loginBtn:hover,
+  .registerBtn:hover,
+  .forgotBtn:hover {
+    background-color: #d1ba10;
+  }
+  
+  .additionalOptions {
+    margin-top: 15px;
+  }
+  
+  .linkBtn {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.3s;
+  }
+  
+  .linkBtn:hover {
+    color: #004080;
+    text-decoration: none;
+  }

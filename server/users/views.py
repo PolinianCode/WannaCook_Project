@@ -8,6 +8,7 @@ from .serializers import UsersReadSerializer, UsersWriteSerializer
 from .utils import *
 from django.shortcuts import get_object_or_404
 
+
 # --------------------- USER ---------------------
 # This section contains API endpoints related to user operations.
 
