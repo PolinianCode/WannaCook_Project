@@ -52,10 +52,10 @@ POST: localhost:8000/api/recipe/add/
   "description": "",
   "instruction": "", 
   "rating_sum": 0,
-  "rating_num": 0
+  "rating_num": 0,
 
   "ingredients": [
-    {"ingredient":1, "quantity":2, "unit": "grams"},
+    {"ingredient":1, "quantity":2, "unit": "grams"}
   ]
 }
 
@@ -149,8 +149,8 @@ GET: localhost:8000/api/recipe/search/
 POST: localhost:8000/api/recipe/rating/add/
 
 {
-  "user_id":3,
-  "recipe_id":4,
+  "user":3,
+  "recipe":4,
   "value":3
 }
 
@@ -158,8 +158,8 @@ POST: localhost:8000/api/recipe/rating/add/
 17)Rating delete
 DELETE: localhost:8000/api/recipe/rating/delete/
 {
- "recipe_id": ,
- "user_id": 
+ "recipe": ,
+ "user": 
 }
 
 
