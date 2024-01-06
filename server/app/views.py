@@ -345,8 +345,8 @@ def api_search_recipes(request):
 @csrf_exempt
 def api_add_rating(request):
     try:
-        user_id = request.data.get('user_id')
-        recipe_id = request.data.get('recipe_id')
+        user_id = request.data.get('user')
+        recipe_id = request.data.get('recipe')
 
         if Ratings.objects.filter(user=user_id, recipe=recipe_id).exists():
             return Response({"message": "Rating already exists"}, status=status.HTTP_400_BAD_REQUEST)
@@ -372,8 +372,8 @@ def api_add_rating(request):
 @csrf_exempt
 def api_remove_rating(request):
     try:
-        recipe_id = request.data.get('recipe_id')
-        user_id = request.data.get('user_id')
+        recipe_id = request.data.get('recipe')
+        user_id = request.data.get('user')
         
         rating_instance = Ratings.objects.get(Q(user = user_id) & Q(recipe = recipe_id))
         rating_instance.delete()
