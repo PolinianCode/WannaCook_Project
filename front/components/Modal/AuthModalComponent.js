@@ -3,6 +3,10 @@ import styles from '../../styles/Modal/AuthModal.module.css';
 
 export default function AuthModal({ onClose }) {
   const [authMode, setAuthMode] = useState('login');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [repeatPassword, setRepeatPassword] = useState('');
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -12,11 +16,6 @@ export default function AuthModal({ onClose }) {
   const handleRegister = (e) => {
     e.preventDefault();
     // Add your registration logic here
-  };
-
-  const handleForgotPassword = (e) => {
-    e.preventDefault();
-    // Add your forgot password logic here
   };
 
   return (
@@ -31,6 +30,7 @@ export default function AuthModal({ onClose }) {
             id="loginUsername"
             name="loginUsername"
             className={styles.input}
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
 
@@ -42,6 +42,7 @@ export default function AuthModal({ onClose }) {
             id="loginPassword"
             name="loginPassword"
             className={styles.input}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
 
@@ -49,11 +50,12 @@ export default function AuthModal({ onClose }) {
             Log In
           </button>
           <div className={styles.tabButtons}>
-        <button onClick={() => setAuthMode('register')} className={styles.tabBtn}>
+        <button onClick={() => {
+          setAuthMode('register')
+          setUsername('')
+          setPassword('')
+        }} className={styles.tabBtn}>
           Register
-        </button>
-        <button onClick={() => setAuthMode('forgot')} className={styles.tabBtn}>
-          Forgot Password
         </button>
       </div>
         </form>
@@ -69,6 +71,7 @@ export default function AuthModal({ onClose }) {
             id="registerUsername"
             name="registerUsername"
             className={styles.input}
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
 
@@ -80,6 +83,7 @@ export default function AuthModal({ onClose }) {
             id="registerEmail"
             name="registerEmail"
             className={styles.input}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
 
@@ -91,6 +95,7 @@ export default function AuthModal({ onClose }) {
             id="registerPassword"
             name="registerPassword"
             className={styles.input}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
 
@@ -102,6 +107,7 @@ export default function AuthModal({ onClose }) {
             id="registerRepeatPassword"
             name="registerRepeatPassword"
             className={styles.input}
+            onChange={(e) => setRepeatPassword(e.target.value)}
             required
           />
 
@@ -109,40 +115,19 @@ export default function AuthModal({ onClose }) {
             Register
           </button>
           <div className={styles.tabButtons}>
-        <button onClick={() => setAuthMode('login')} className={styles.tabBtn}>
+        <button onClick={() => {
+          setAuthMode('login')
+          setUsername('')
+          setPassword('')
+          setRepeatPassword('')
+          setEmail('')
+        }} className={styles.tabBtn}>
           Login
         </button>
       </div>
         </form>
       )}
 
-      {authMode === 'forgot' && (
-        <form onSubmit={handleForgotPassword}>
-          <label htmlFor="forgotEmail" className={styles.label}>
-            Email:
-          </label>
-          <input
-            type="email"
-            id="forgotEmail"
-            name="forgotEmail"
-            className={styles.input}
-            required
-          />
-
-          <button type="submit" className={styles.forgotBtn}>
-            Reset Password
-          </button>
-
-          <div className={styles.tabButtons}>
-            <button onClick={() => setAuthMode('login')} className={styles.tabBtn}>
-            Login
-            </button>
-            <button onClick={() => setAuthMode('register')} className={styles.tabBtn}>
-            Register
-            </button>
-         </div>
-        </form>
-      )}
       
     </div>
   );

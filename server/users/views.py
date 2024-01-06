@@ -3,10 +3,12 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
+from django.http import HttpResponse
 from .models import Users
 from .serializers import UsersReadSerializer, UsersWriteSerializer
 from .utils import *
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import authenticate, login, logout
 
 
 # --------------------- USER ---------------------
@@ -62,13 +64,20 @@ def api_login_user(request):
     username = request.data.get('nickname')
     password = request.data.get('password')
 
+    print(f"Received credentials - Username: {username}, Password: {password}")
+
     if not username or not password:
         return Response({"error": "Invalid username or password"}, status=status.HTTP_400_BAD_REQUEST)
     
     user = Users.objects.filter(nickname=username, password=password).first()
 
+    #user = authenticate(request, nickname=username, password=password)
+
+    print(f"Authentication result: {user}")
+
 
     if user is not None:
+        #login(request, user)
         return Response({"message": "Login successfull"}, status=status.HTTP_200_OK)
     else:
         return Response({"error": "Invalid username or password"}, status=status.HTTP_401_UNAUTHORIZED)  

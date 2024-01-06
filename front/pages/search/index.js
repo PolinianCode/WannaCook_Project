@@ -3,6 +3,8 @@ import Header from "../../components/Header/HeaderComponent";
 import { useRouter } from "next/router";
 import Container from "../../components/Basic/ContainerComponent";
 import Modal from "../../components/Modal/ModalComponent";
+import RecipeCard from "../../components/Basic/RecipeCardComponent";
+import styles from "../../styles/Basic/Grid4.module.css"
 
 import { useState } from "react";
 import AuthModal from "../../components/Modal/AuthModalComponent";
@@ -33,12 +35,16 @@ export default function SearchResult() {
             <>
                 <Header onOpenModal={() => setShowModal(true)}/>
                 <Container>
-                    <div>
-                        <ul>
+                    <div className={styles.grid}>
                             {searchData.search_results.map((result) => (
-                                <li key={result.recipe_id}>{result.title}</li>
+                                <RecipeCard 
+                                    key={result.recipe_id} 
+                                    title={result.title} 
+                                    description={result.description} 
+                                    rating={result.rating_sum / result.rating_num} 
+                                    recipe_id={result.recipe_id}
+                                />
                             ))}
-                        </ul>
                     </div>
                 </Container>   
                 {showModal && (
