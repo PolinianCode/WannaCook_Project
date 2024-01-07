@@ -31,8 +31,12 @@ def api_get_users(request):
 @csrf_exempt
 def api_register_user(request):
     try:
-        username_data = request.data.get('nickname', '')
-        email_data = request.data.get('email', '')
+        encoded_data = request.GET.get('data', '')
+        decoded_data = unquote_plus(encoded_data)
+        data = json.loads(decoded_data)
+
+        username_data = data.get('nickname', '')
+        email_data = data.get('email', '')
 
         if not username_data:
             return Response({'error': 'Missing username parameter!'}, status=status.HTTP_400_BAD_REQUEST)
@@ -48,6 +52,7 @@ def api_register_user(request):
         formatted_datetime = current_datetime.strftime("%Y-%m-%d")
         
 
+        print(data)
         serializer = UsersWriteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.validated_data['registration_date'] = formatted_datetime

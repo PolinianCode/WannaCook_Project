@@ -55,9 +55,38 @@ export default function AuthModal({ onClose }) {
     
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    // Add your registration logic here
+
+    const userData = {
+      nickname: username,
+      email: email,
+      password: password,
+      isModerator: 0
+    }
+
+    try {
+
+      const fullUrl = JSONtoURL(userData, 'user/register/')
+
+      const response = await fetch(fullUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+      
+      console.log(response);
+
+      if (!response.ok) {
+        throw new Error('Registration failed');
+      }
+
+    } catch (error) {
+      console.error('Error:', error);
+    }
+
+
   };
 
   return (
