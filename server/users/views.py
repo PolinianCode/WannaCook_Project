@@ -84,8 +84,17 @@ def api_login_user(request):
 
 
     if user is not None:
-        #login(request, user)
-        return Response({"message": "Login successfull"}, status=status.HTTP_200_OK)
+
+        serializer = UsersReadSerializer(user)
+        serialized_data = serializer.data
+
+        print(serialized_data)
+
+        response_data = {
+            "user": serialized_data,
+            "message": "Login successful"
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
     else:
         return Response({"error": "Invalid username or password"}, status=status.HTTP_401_UNAUTHORIZED)  
 

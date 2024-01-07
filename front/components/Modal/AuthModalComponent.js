@@ -1,6 +1,10 @@
+'use client'
+
 import JSONtoURL from '../../utils/api';
 import React, { useState } from 'react';
 import styles from '../../styles/Modal/AuthModal.module.css';
+import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
 
 export default function AuthModal({ onClose }) {
   const [authMode, setAuthMode] = useState('login');
@@ -9,10 +13,12 @@ export default function AuthModal({ onClose }) {
   const [email, setEmail] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
 
+
+
+  const router = useRouter()
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    // Add your login logic here
-    // Send the user data to the server for authentication
     
     const userData = {
       nickname: username,
@@ -29,16 +35,20 @@ export default function AuthModal({ onClose }) {
         },
       });
 
-      console.log(response);
 
       if (!response.ok) {
         throw new Error('Login failed');
       }
 
-      // Handle successful login
+      const responseData = await response.json();
+      const user = responseData.user;
+
+      
+      Cookies.set('user', JSON.stringify(user), { expires: 7, secure: true });
+      router.push('/profile');
+      
     } catch (error) {
       console.error('Error:', error);
-      // Handle login error
     }
     
 
