@@ -37,6 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'categories',
+    'comments',
+    'favorites',
+    'ingredients',
+    'ratings',
+    'recipes',
 ]
 
 MIDDLEWARE = [
@@ -73,10 +79,20 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+import pymysql
+pymysql.install_as_MySQLdb()
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'WannaCookV2',
+        'USER': 'admin',
+        'PASSWORD': 'Admin2281337',
+        'HOST': 'localhost', 
+        'PORT': '3306',      
+        'OPTIONS': {
+            'ssl': False,
+        },
     }
 }
 
