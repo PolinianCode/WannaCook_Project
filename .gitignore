@@ -2,3 +2,4 @@ server/server/settings.py
 backend/backend/settings.py
 
 **/__pycache__
+backend/backend/settings.py
