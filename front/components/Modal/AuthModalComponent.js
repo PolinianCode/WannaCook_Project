@@ -1,3 +1,4 @@
+import JSONtoURL from '../../utils/api';
 import React, { useState } from 'react';
 import styles from '../../styles/Modal/AuthModal.module.css';
 
@@ -8,9 +9,40 @@ export default function AuthModal({ onClose }) {
   const [email, setEmail] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     // Add your login logic here
+    // Send the user data to the server for authentication
+    
+    const userData = {
+      nickname: username,
+      password: password
+    };
+
+    try {
+      const fullUrl = JSONtoURL(userData, 'user/login/')
+
+      const response = await fetch(fullUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+
+      console.log(response);
+
+      if (!response.ok) {
+        throw new Error('Login failed');
+      }
+
+      // Handle successful login
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle login error
+    }
+    
+
+    
   };
 
   const handleRegister = (e) => {
@@ -50,14 +82,14 @@ export default function AuthModal({ onClose }) {
             Log In
           </button>
           <div className={styles.tabButtons}>
-        <button onClick={() => {
-          setAuthMode('register')
-          setUsername('')
-          setPassword('')
-        }} className={styles.tabBtn}>
-          Register
-        </button>
-      </div>
+            <button onClick={() => {
+              setAuthMode('register')
+              setUsername('')
+              setPassword('')
+            }} className={styles.tabBtn}>
+              Register
+            </button>
+           </div>
         </form>
       )}
 

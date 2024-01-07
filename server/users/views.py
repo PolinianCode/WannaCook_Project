@@ -1,3 +1,5 @@
+from urllib.parse import unquote_plus
+import json
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
@@ -57,12 +59,17 @@ def api_register_user(request):
         print(e)
         return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-# Get user data
+# Get user data (LOGIN)
 @api_view(['GET'])
 @csrf_exempt
 def api_login_user(request):
-    username = request.data.get('nickname')
-    password = request.data.get('password')
+    encoded_data = request.GET.get('data', '')
+    decoded_data = unquote_plus(encoded_data)
+
+    data = json.loads(decoded_data)
+
+    username = data.get('nickname')
+    password = data.get('password')
 
     print(f"Received credentials - Username: {username}, Password: {password}")
 
