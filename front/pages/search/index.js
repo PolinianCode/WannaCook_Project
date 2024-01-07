@@ -41,7 +41,7 @@ export default function SearchResult() {
                                     key={result.recipe_id} 
                                     title={result.title} 
                                     description={result.description} 
-                                    rating={result.rating_sum / result.rating_num} 
+                                    rating={(result.rating_sum / result.rating_num).toFixed(1)} 
                                     recipe_id={result.recipe_id}
                                 />
                             ))}

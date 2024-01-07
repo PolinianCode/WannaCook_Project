@@ -19,6 +19,9 @@ def api_search_recipes(request):
         encoded_data = request.GET.get('data', '')
         decoded_data = unquote_plus(encoded_data)
 
+
+        print("Decoded Data:", decoded_data)
+
         data = json.loads(decoded_data)
 
         title = data.get("title", "")
@@ -30,14 +33,16 @@ def api_search_recipes(request):
         if title:
             filters['title__icontains'] = title
         if category:
-            filters['category__id__icontains'] = category
+            filters['category__id'] = category
         if user:
             filters['user__nickname__icontains'] = user
         if ingredient:
-            recipes_with_ingredients = RecipeIngredient.objects.filter(id__in = ingredient).values_list('recipe_id', flat=True)
+            recipes_with_ingredients = RecipeIngredient.objects.filter(ingredient_id__in = ingredient).values_list('recipe_id', flat=True)
             filters['recipe_id__in'] = recipes_with_ingredients
 
         search_results = Recipes.objects.filter(**filters)
+
+        print("SQL Query:", str(search_results.query))
 
         serialized_results = RecipesSerializer(search_results, many=True)
 
