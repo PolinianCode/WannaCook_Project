@@ -99,6 +99,8 @@ export default function Search () {
     
             const jsonString = encodeURIComponent(JSON.stringify(request_json));
             const fullUrl = `${url}?data=${jsonString}`;
+
+            console.log("URL:" + fullUrl)
     
             const response = await fetch(fullUrl, {
                 method: 'GET',
