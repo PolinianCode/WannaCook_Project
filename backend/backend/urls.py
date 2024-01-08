@@ -18,5 +18,7 @@ urlpatterns = [
     # path('api/recipes/', include('recipes.urls')),
     # path('api/user/', include('users.urls')),
 
+    path('api/user/', include('users.urls')),
+    path('api/recipes/', include('search.urls')),
     path('admin/', admin.site.urls)
 ]
