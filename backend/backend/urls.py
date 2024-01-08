@@ -3,9 +3,11 @@ from django.contrib import admin
 from rest_framework.routers import DefaultRouter
 
 from categories.views import CategoriesViewSet
+from ingredients.views import IngredientsViewSet
 
 router = DefaultRouter()
 router.register(r'categories', CategoriesViewSet, basename='categories')
+router.register(r'ingredients', IngredientsViewSet, basename='ingredients')
 
 
 urlpatterns = [
