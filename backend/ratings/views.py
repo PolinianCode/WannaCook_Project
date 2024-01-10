@@ -3,8 +3,6 @@ from rest_framework.response import Response
 from .models import Ratings
 from .serializers import RatingsSerializer
 from recipes.models import Recipes
-from rest_framework.decorators import action
-from django.db.models import F
 
 class RatingsViewSet(viewsets.ModelViewSet):
     queryset = Ratings.objects.all()
