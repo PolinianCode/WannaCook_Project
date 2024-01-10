@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from .serializers import UserSerializer
+from rest_framework.authtoken.models import Token
 
 
 
@@ -37,6 +38,8 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
 
         if user:
+            token = Token.objects.create(user=user)
+            print(token.key)
             login(request, user)
             user_serialized = UserSerializer(user)
             print(request.session.items())
