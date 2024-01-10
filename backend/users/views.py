@@ -2,7 +2,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from rest_framework.authtoken.models import Token
 from .serializers import UserSerializer
 
 
@@ -20,8 +19,6 @@ def register_user(request):
         user = User.objects.create_user(username=username, password = password, email=email)
 
         if user:
-
-           
 
             login(request, user)
             return JsonResponse({'Message': 'User has been created'}, status=200)
