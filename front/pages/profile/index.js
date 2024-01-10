@@ -1,24 +1,18 @@
-'use client'
-import Cookies from 'js-cookie';
+import { useEffect, useState } from 'react';
+import { universalApi } from '../../utils/api';
 
 export default function Profile() {
-
-  const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null;
-
-  const ClearCookies = () =>  {
-    Cookies.remove('user');
-  }
-
-   return (
+  
+  return (
     <>
-            {user ? (
-              <div>
-                <p>Welcome, {user.nickname}!</p>
-                 <button onClick={() => ClearCookies()}>Logout</button>
-              </div>    
-            ) : (
-                <p>Error</p>
-            )}
-        </>
-   )
- }
+      {user ? (
+        <div>
+          <p>Welcome, {user.nickname}!</p>
+          <button>Logout</button>
+        </div>
+      ) : (
+        <p>Error</p>
+      )}
+    </>
+  );
+}

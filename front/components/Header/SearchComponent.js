@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useRef  } from 'react';
 import { useRouter } from 'next/router';
+import { universalApi } from '../../utils/api';
 
 import styles from "../../styles/Header/Search.module.css"
-import RecipeCard from '../Basic/RecipeCardComponent';
 
 export default function Search () {
 
@@ -19,20 +19,32 @@ export default function Search () {
 
     const router = useRouter()
 
-    //Get ingredient from API 
+    //Get categories from API 
     useEffect(() => {
-        fetch('http://localhost:8000/api/ingredients/all/')
-        .then(response => response.json())
-        .then(data => setIngredients(data.Ingredients || []))
-        .catch(error => console.error('Error getting ingredients:', error));
+             async function fetchCategories() {
+                try {
+                    const response = await universalApi('categories/', 'GET');
+                    setCategories(response)
+                } catch (error) {
+                    console.error('Error getting categories:', error);
+                }
+             }
+
+             fetchCategories()
     }, []);
 
-    //Get Categories from API 
+    //Get ingredients from API 
     useEffect(() => {
-        fetch('http://localhost:8000/api/category/all/')
-        .then(response => response.json())
-        .then(data => setCategories(data.Categories || []))
-        .catch(error => console.error('Error getting categories:', error));
+        async function fetchIngredients() {
+           try {
+               const response = await universalApi('ingredients/', 'GET');
+               setIngredients(response)
+           } catch (error) {
+               console.error('Error getting ingredients:', error);
+           }
+        }
+
+        fetchIngredients()
     }, []);
 
     //Close additional div with filters
@@ -55,7 +67,7 @@ export default function Search () {
         const isSelectedCategory = selectedCategory === category
 
         if (isSelectedCategory) {
-            setSelectedCategory('')
+            setSelectedCategory(null)
           } else {
             setSelectedCategory(category)
           }
@@ -85,37 +97,21 @@ export default function Search () {
         e.preventDefault();
     
         try {
-            const request_json = {};
+            const requestJson = {};
     
-            if (searchTerm !== "") request_json.title = searchTerm;
-            if (selectedCategory !== null) request_json.category = selectedCategory.id;
+            if (searchTerm !== "") requestJson.title = searchTerm;
+            if (selectedCategory !== undefined && (selectedCategory !== null)) requestJson.category = selectedCategory.id;
             if (selectedIngredients.length > 0) {
-                request_json.ingredients = selectedIngredients.map(ingredient => ingredient.id);
+                requestJson.ingredients = selectedIngredients.map(ingredient => ingredient.id);
             }
-    
-            console.log(JSON.stringify(request_json));
-    
-            const url = 'http://localhost:8000/api/recipes/search/';
-    
-            const jsonString = encodeURIComponent(JSON.stringify(request_json));
-            const fullUrl = `${url}?data=${jsonString}`;
 
-            console.log("URL:" + fullUrl)
-    
-            const response = await fetch(fullUrl, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-    
-            if (!response.ok) {
-                throw new Error(`API request failed with status ${response.status}`);
-            }
-    
-            const data = await response.json();
-            const encodedData = encodeURIComponent(JSON.stringify(data));
-            console.log('API Response:', data);
+            console.log(requestJson)
+
+            const responseData = await universalApi('data/search/', 'GET', requestJson)
+
+            console.log(responseData)
+        
+            const encodedData = encodeURIComponent(JSON.stringify(responseData));
     
             router.push({
                 pathname: '/search',

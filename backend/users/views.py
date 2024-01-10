@@ -2,6 +2,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from rest_framework.authtoken.models import Token
+from .serializers import UserSerializer
+
+
 
 @csrf_exempt
 def register_user(request):
@@ -16,11 +20,16 @@ def register_user(request):
         user = User.objects.create_user(username=username, password = password, email=email)
 
         if user:
+
+           
+
             login(request, user)
             return JsonResponse({'Message': 'User has been created'}, status=200)
         else:
             return JsonResponse({'Message': 'Error while creating user'}, status=400)
-    return JsonResponse({'message': 'Invalid request method'}, status=405)  
+    return JsonResponse({'message': 'Invalid request method'}, status=405) 
+
+
 
 
 @csrf_exempt
@@ -33,7 +42,12 @@ def login_user(request):
 
         if user:
             login(request, user)
-            return JsonResponse({'Message': 'Login successfull'}, status=200)
+            user_serialized = UserSerializer(user)
+            print(request.session.items())
+            return JsonResponse({
+                'message': 'Login successful',
+                'user': user_serialized.data,
+            }, status=200)
         else:
             return JsonResponse({'Message': 'Invalid login credentials'}, status=401)
 

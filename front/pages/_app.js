@@ -3,9 +3,12 @@ import '../styles/global.css';
 import Head from 'next/head';
 
 function MyApp({ Component, pageProps }) {
+
+
+
   return (
     <>
-    <Head>
+      <Head>
         {/* Add the font link here */}
         <link
           rel="stylesheet"
@@ -14,7 +17,7 @@ function MyApp({ Component, pageProps }) {
       </Head>
      
       <Component {...pageProps} />
-      </>
+    </>
   );
 }
 

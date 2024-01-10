@@ -1,25 +1,43 @@
 import { useRouter } from 'next/router'
 import styles from '../../styles/Basic/RecipeCard.module.css'
 import Image from 'next/Image'
+import { universalApi } from '../../utils/api'
+import { useEffect, useState } from 'react'
 
 
 export default function RecipeCard({ title, description, rating, recipe_id, category}) {
 
     const router = useRouter()
 
-    const handleClick = (e) => {
-        router.push('/profile/')
-    }
+    const [categoryDetails, setCategoryDetails] = useState(null);
+
+    useEffect(() => {
+        const fetchCategory = async () => {
+            try {
+                const response = await universalApi(`categories/${category}/`, 'GET');
+                setCategoryDetails(response);
+            } catch (error) {
+                console.error('Error getting category details:', error);
+            }
+        };
+
+        fetchCategory();
+    }, [category]);
+
 
     const handleSave = (e) => {
         console.log("Saved")
     }
 
+    const handleClick = (e) => {
+        router.push(`/recipe/${recipe_id}`);
+      };
+
     return (
-        <div className={styles.recipeCard} >
+        <div className={styles.recipeCard} onClick={(e) => handleClick(e)}>
                 <div className={styles.recipeContent} onClick={(e) => handleClick()}>
                     <p className={styles.recipeTags}>
-                        Text
+                        {categoryDetails && categoryDetails.name}
                     </p>
 
                     <h1 className={styles.recipeTitle}>{title}</h1>

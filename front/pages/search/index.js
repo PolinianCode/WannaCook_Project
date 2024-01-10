@@ -41,8 +41,9 @@ export default function SearchResult() {
                                     key={result.recipe_id} 
                                     title={result.title} 
                                     description={result.description} 
+                                    category={result.category}
                                     rating={(result.rating_sum / result.rating_num).toFixed(1)} 
-                                    recipe_id={result.recipe_id}
+                                    recipe_id={result.id}
                                 />
                             ))}
                     </div>

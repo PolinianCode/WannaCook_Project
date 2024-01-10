@@ -1,10 +1,9 @@
 'use client'
 
-import JSONtoURL from '../../utils/api';
+import {universalApi} from '../../utils/api';
 import React, { useState } from 'react';
 import styles from '../../styles/Modal/AuthModal.module.css';
 import { useRouter } from 'next/router';
-import Cookies from 'js-cookie';
 
 export default function AuthModal({ onClose }) {
   const [authMode, setAuthMode] = useState('login');
@@ -14,72 +13,46 @@ export default function AuthModal({ onClose }) {
   const [repeatPassword, setRepeatPassword] = useState('');
 
 
-
   const router = useRouter()
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
-    const userData = {
-      nickname: username,
-      password: password
-    };
-
     try {
-      const fullUrl = JSONtoURL(userData, 'user/login/')
-
-      const response = await fetch(fullUrl, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      });
-
-
-      if (!response.ok) {
-        throw new Error('Login failed');
+      const credentials = {
+        username: username,
+        password: password
       }
+      const response = await universalApi('token/', 'POST', credentials)
 
-      const responseData = await response.json();
-      const user = responseData.user;
+      console.log(response)
 
-      
-      Cookies.set('user', JSON.stringify(user), { expires: 7, secure: true });
-      router.push('/profile');
-      
+      if(response.message === 'Login successful') {
+        console.log("Login successful")
+      } else {
+        console.log("Login failed")
+      }
     } catch (error) {
-      console.error('Error:', error);
+      console.error(error)
     }
-    
-
-    
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    const userData = {
-      nickname: username,
-      email: email,
-      password: password,
-      isModerator: 0
-    }
-
     try {
+      const userData = {
+        username: username,
+        email: email,
+        re_password: repeatPassword,
+        password: password
+      }
 
-      const fullUrl = JSONtoURL(userData, 'user/register/')
+      const response = universalApi('user/register/', 'POST', userData)
 
-      const response = await fetch(fullUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      })
-      
-      console.log(response);
+      console.log(response)
 
-      if (!response.ok) {
-        throw new Error('Registration failed');
+      if (response.Message === 'User has been created') {
+        console.log(response.Message);
       }
 
     } catch (error) {

@@ -11,7 +11,7 @@ def search_recipes(request):
         title = request.GET.get('title')
         category = request.GET.get('category')
         user = request.GET.get('user')
-        ingredient = request.GET.getlist('indgredients')
+        ingredient = request.GET.getlist('ingredients')
 
         filters = {}
         if title:
