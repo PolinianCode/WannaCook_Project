@@ -5,6 +5,7 @@ import Container from "../../components/Basic/ContainerComponent";
 import Modal from "../../components/Modal/ModalComponent";
 import RecipeCard from "../../components/Basic/RecipeCardComponent";
 import styles from "../../styles/Basic/Grid4.module.css"
+import NotFound from "../../components/Basic/404";
 
 import { useState } from "react";
 import AuthModal from "../../components/Modal/AuthModalComponent";
@@ -21,14 +22,10 @@ export default function SearchResult() {
         const searchData = JSON.parse(decodeURIComponent(data));
 
         if (!searchData.search_results || searchData.search_results.length === 0) {
-            return (
-                <>
-                    <Header onOpenModal={() => setShowModal(true)} />
-                    <Container>
-                        <div>Nothing was found</div>
-                    </Container>
-                </>
-            );
+            router.push({
+                pathname: '/error',
+                query: { code: '404', message: 'Try to change search requirements and try again' },
+            });
         }
 
         return (

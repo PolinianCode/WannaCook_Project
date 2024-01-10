@@ -22,7 +22,7 @@ export default function AuthModal({ onClose }) {
         username: username,
         password: password
       }
-      const response = await universalApi('token/', 'POST', credentials)
+      const response = await universalApi('user/login/', 'POST', credentials)
 
       console.log(response)
 

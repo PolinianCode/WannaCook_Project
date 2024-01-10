@@ -9,7 +9,6 @@ from ingredients.views import IngredientsViewSet
 from ratings.views import RatingsViewSet
 from recipes.views import RecipesViewSet
 
-# improt me obtain auth token
 from rest_framework.authtoken.views import obtain_auth_token
 
 

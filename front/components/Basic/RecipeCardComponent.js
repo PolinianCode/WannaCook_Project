@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router'
 import styles from '../../styles/Basic/RecipeCard.module.css'
-import Image from 'next/Image'
 import { universalApi } from '../../utils/api'
 import { useEffect, useState } from 'react'
 
@@ -34,7 +33,7 @@ export default function RecipeCard({ title, description, rating, recipe_id, cate
       };
 
     return (
-        <div className={styles.recipeCard} onClick={(e) => handleClick(e)}>
+        <div className={styles.recipeCard}>
                 <div className={styles.recipeContent} onClick={(e) => handleClick()}>
                     <p className={styles.recipeTags}>
                         {categoryDetails && categoryDetails.name}
