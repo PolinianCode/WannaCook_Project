@@ -13,10 +13,6 @@ from recipes.views import RecipesViewSet
 from rest_framework.authtoken.views import obtain_auth_token
 
 
-
-
-
-
 router = DefaultRouter()
 router.register(r'categories', CategoriesViewSet, basename='categories')
 router.register(r'comments', CommentsViewSet, basename='comments')

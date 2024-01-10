@@ -20,9 +20,6 @@ def register_user(request):
         user = User.objects.create_user(username=username, password = password, email=email)
 
         if user:
-
-           
-
             login(request, user)
             return JsonResponse({'Message': 'User has been created'}, status=200)
         else:
