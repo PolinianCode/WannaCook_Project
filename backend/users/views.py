@@ -2,10 +2,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from rest_framework.decorators import permission_classes
+from rest_framework.decorators import authentication_classes
 from .serializers import UserSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 #improt status
 from rest_framework import status
@@ -72,7 +73,7 @@ def logout_user(request):
 
 @csrf_exempt
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def token_check(request):
     return Response({'Message': 'Token is valid'}, status=status.HTTP_200_OK)
     # if request.method == 'POST':
