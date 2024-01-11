@@ -2,8 +2,15 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from rest_framework.decorators import permission_classes
 from .serializers import UserSerializer
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+#improt status
+from rest_framework import status
+#import api 
+from rest_framework.decorators import api_view
 
 
 
@@ -38,6 +45,8 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
 
         if user:
+            if Token.objects.filter(user=user).exists():
+                token = Token.objects.get(user=user).delete()
             token = Token.objects.create(user=user)
             print(token.key)
             login(request, user)
@@ -46,6 +55,7 @@ def login_user(request):
             return JsonResponse({
                 'message': 'Login successful',
                 'user': user_serialized.data,
+                'token': token.key
             }, status=200)
         else:
             return JsonResponse({'Message': 'Invalid login credentials'}, status=401)
@@ -55,5 +65,20 @@ def login_user(request):
 
 @csrf_exempt
 def logout_user(request):
+    Token.objects.get(user=request.user).delete()
     logout(request)
     return JsonResponse({'Message': 'Logout successfull'}, status=200)
+
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def token_check(request):
+    return Response({'Message': 'Token is valid'}, status=status.HTTP_200_OK)
+    # if request.method == 'POST':
+    #     token = request.get('token')
+    #     if Token.objects.filter(key=token).exists():
+    #         return JsonResponse({'Message': 'Token is valid'}, status=200)
+    #     else:
+    #         return JsonResponse({'Message': 'Token is invalid'}, status=400)
+    # return JsonResponse({'Message': 'Invalid request method'}, status=405)

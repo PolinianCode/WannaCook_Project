@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 
 
 
-
 class CategoriesViewSet(viewsets.ModelViewSet):
+
     queryset = Categories.objects.all()
     serializer_class = CategoriesSerializer

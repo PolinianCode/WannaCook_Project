@@ -4,6 +4,7 @@ import {universalApi} from '../../utils/api';
 import React, { useState } from 'react';
 import styles from '../../styles/Modal/AuthModal.module.css';
 import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
 
 export default function AuthModal({ onClose }) {
   const [authMode, setAuthMode] = useState('login');
@@ -25,6 +26,8 @@ export default function AuthModal({ onClose }) {
       const response = await universalApi('user/login/', 'POST', credentials)
 
       console.log(response)
+
+      Cookies.set('token', response.token , { expires: 7 }); 
 
       if(response.message === 'Login successful') {
         console.log("Login successful")

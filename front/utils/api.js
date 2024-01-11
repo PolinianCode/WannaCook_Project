@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 
 export default function JSONtoURL(json, url_path) {
@@ -16,6 +17,7 @@ export const universalApi = async (path = '', method = 'GET', data = null) => {
   const config = {
     headers: {
       'X-CSRFToken': getCSRFToken(),
+      'Authorization': `Token ${Cookies.get('token')}`,
     },
   };
 
@@ -41,7 +43,7 @@ export const universalApi = async (path = '', method = 'GET', data = null) => {
           params.append(key, data[key]);
         }
         requestConfig.params = params;
-    } else {
+    }else {
         requestConfig[method === 'GET' ? 'params' : 'data'] = data;
     }
    
