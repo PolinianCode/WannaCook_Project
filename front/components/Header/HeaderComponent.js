@@ -2,14 +2,12 @@
 "use client"
 
 import styles from "../../styles/Header/Header.module.css"
-
 import { useRouter } from "next/router";
-
-
 import Image from "next/Image";
 import Container from "../Basic/ContainerComponent";
 import Search from "./SearchComponent";
-
+import { useContext } from "react";
+import AuthContext from "../../contexts/authContext";
 
 export default function Header( {onOpenModal } ) {
 
@@ -19,6 +17,9 @@ export default function Header( {onOpenModal } ) {
         e.preventDefault()
         router.push('/')
     }
+
+    const { authStatus } = useContext(AuthContext);
+
 
   return (
     
@@ -34,7 +35,12 @@ export default function Header( {onOpenModal } ) {
                 className={styles.Logo}
                 />
                 <Search></Search>
-                <button onClick={onOpenModal} className={styles.loginBtn}>
+                {authStatus ? (
+                    <>
+                        dsjhds
+                    </>
+                ) : (
+                    <button onClick={onOpenModal} className={styles.loginBtn}>
                     Log In
                     <svg width="15" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -42,7 +48,8 @@ export default function Header( {onOpenModal } ) {
                         fill="#241F20"
                         ></path>
                     </svg>
-                </button>
+                    </button>
+                )}
           </Container>
 
       </header>

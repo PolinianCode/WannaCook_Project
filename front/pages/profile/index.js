@@ -27,7 +27,7 @@ export default function Profile() {
         setResponse(response.status);
         router.push({
           pathname: '/error',
-          query: { code: response.status, message: response.Message },
+          query: { code: response.status, message: "You are not logged in to visit this page" },
         });
       }
     };
