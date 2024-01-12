@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
 import { universalApi } from '../../utils/api';
 import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
+import Layout from '../../components/layout';
 
 export default function Profile() {
+
+  const router = useRouter()
 
   const [response, setResponse] = useState(false);
 
@@ -15,19 +19,25 @@ export default function Profile() {
           'Authorization': `Token ${Cookies.get('token')} `,
         },
       });
-      if(response.Message === 'Token is valid') {
+
+      console.log(response);
+      if(response.status === 200) {
         setResponse(response.status);
       } else {  
         setResponse(response.status);
+        router.push({
+          pathname: '/error',
+          query: { code: response.status, message: response.Message },
+        });
       }
     };
     getUser();
-  })
+  }, [router])
 
   
   return (
-    <>
-        {response === 200 ? (
+    <Layout>
+      {response === 200 ? (
             <div>
                 <h1>Profile</h1>
             </div>
@@ -36,6 +46,6 @@ export default function Profile() {
                 <h1>Not logged in</h1>
             </div>
         )}
-    </>
+    </Layout>
   );
 }

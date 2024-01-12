@@ -1,14 +1,8 @@
 'use client'
-import Header from "../../components/Header/HeaderComponent";
 import { useRouter } from "next/router";
-import Container from "../../components/Basic/ContainerComponent";
-import Modal from "../../components/Modal/ModalComponent";
 import RecipeCard from "../../components/Basic/RecipeCardComponent";
 import styles from "../../styles/Basic/Grid4.module.css"
-import NotFound from "../../components/Basic/404";
-
-import { useState } from "react";
-import AuthModal from "../../components/Modal/AuthModalComponent";
+import Layout from "../../components/layout";
 
 export default function SearchResult() {
     const router = useRouter();
@@ -16,7 +10,6 @@ export default function SearchResult() {
 
     
 
-    const [showModal, setShowModal] = useState(false);
 
     try {
         const searchData = JSON.parse(decodeURIComponent(data));
@@ -30,9 +23,8 @@ export default function SearchResult() {
 
         return (
             <>
-                <Header onOpenModal={() => setShowModal(true)}/>
-                <Container>
-                    <div className={styles.grid}>
+                <Layout>
+                <div className={styles.grid}>
                             {searchData.search_results.map((result) => (
                                 <RecipeCard 
                                     key={result.recipe_id} 
@@ -44,12 +36,8 @@ export default function SearchResult() {
                                 />
                             ))}
                     </div>
-                </Container>   
-                {showModal && (
-                    <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-                        <AuthModal />
-                    </Modal>
-                )}       
+
+                </Layout> 
             </>
         );
     } catch (error) {

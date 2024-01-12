@@ -1,7 +1,6 @@
-import Header from "../../components/Header/HeaderComponent"
-import Container from "../../components/Basic/ContainerComponent"
 import NotFound from "../../components/Basic/404"
 import { useRouter } from "next/router";
+import Layout from "../../components/layout";
 
 export default function Error() { 
 
@@ -10,11 +9,8 @@ export default function Error() {
     const { code, message } = router.query;
 
     return (
-        <div>
-            <Header />
-            <Container>
-                <NotFound headingTitle={`Error ${code}`} pageText={message}/>
-            </Container>
-        </div>
+        <Layout>
+            <NotFound headingTitle={`Error ${code}`} pageText={message}/>
+        </Layout>
     )
 }

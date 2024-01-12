@@ -2,10 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { universalApi } from '../../utils/api';
-import Header from '../../components/Header/HeaderComponent';
-import Container from '../../components/Basic/ContainerComponent';
-
 import styles from '../../styles/Basic/RecipePage.module.css';
+import Layout from '../../components/layout';
 
 const RecipePage = () => {
   const router = useRouter();
@@ -60,10 +58,8 @@ const RecipePage = () => {
   }
 
   return (
-    <div>
-      <Header />
-      <Container>
-        <div className={styles.recipeContainer}>
+      <Layout>
+          <div className={styles.recipeContainer}>
           <div className={styles.recipeImage}>
             Image
           </div>
@@ -86,8 +82,7 @@ const RecipePage = () => {
             </div>
           </div>
         </div>
-      </Container>
-    </div>
+      </Layout>
   );
 };
 
