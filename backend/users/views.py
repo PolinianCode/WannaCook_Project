@@ -87,10 +87,11 @@ def logout_user(request):
 @authentication_classes([TokenAuthentication])
 def token_check(request):
     return Response({'Message': 'Token is valid'}, status=status.HTTP_200_OK)
-    # if request.method == 'POST':
-    #     token = request.get('token')
-    #     if Token.objects.filter(key=token).exists():
-    #         return JsonResponse({'Message': 'Token is valid'}, status=200)
-    #     else:
-    #         return JsonResponse({'Message': 'Token is invalid'}, status=400)
-    # return JsonResponse({'Message': 'Invalid request method'}, status=405)
+
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+def get_user_data(request):
+    user = request.user
+    serializer = UserSerializer(user)
+    return Response(serializer.data)

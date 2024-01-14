@@ -15,6 +15,7 @@ body {
   button {
     padding: 10px;
     border-radius: 5px;
+    cursor: pointer;
   }
   
   input:focus {

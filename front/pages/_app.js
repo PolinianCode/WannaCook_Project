@@ -14,6 +14,8 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     const checkToken = async () => {
+      const url_excepts = ['/', '/recipe/[id]']
+
       try {
         const response = await fetch('http://localhost:8000/api/user/token_check/', {
           method: 'POST',
@@ -27,22 +29,21 @@ function MyApp({ Component, pageProps }) {
           setAuthStatus(true);
         } else {
           setAuthStatus(false);
-          router.push({
-            pathname: '/error',
-            query: { code: response.status, message: "You are not logged in to visit this page" },
-          });
+          if(!url_excepts.includes(router.pathname)) {
+            router.push({
+              pathname: '/error',
+              query: { code: response.status, message: "You are not logged in to visit this page" },
+            });
+          }
         }
       } catch (error) {
         console.error('Error checking token:', error);
-        router.push({
-          pathname: '/error',
-          query: { code: response.status, message: "Error checking aut status" },
-        });
+        
       }
     };
 
     checkToken();
-  }, []);
+  }, [router.pathname]);
 
 
   return (

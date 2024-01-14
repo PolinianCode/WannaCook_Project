@@ -31,6 +31,7 @@ export default function AuthModal({ onClose }) {
         console.log("Login successful")
         Cookies.set('token', response.token , { expires: 7 });
         router.reload()
+        router.push('/')
       } else {
         console.log("Login failed")
       }
@@ -57,6 +58,7 @@ export default function AuthModal({ onClose }) {
         console.log(response.Message);
         Cookies.set('token', response.token , { expires: 7 });
         router.reload()
+        router.push('/')
       }
 
     } catch (error) {
