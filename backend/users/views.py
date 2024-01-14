@@ -28,8 +28,17 @@ def register_user(request):
         user = User.objects.create_user(username=username, password = password, email=email)
 
         if user:
+            if Token.objects.filter(user=user).exists():
+                token = Token.objects.get(user=user)
+                token.delete()
+            token = Token.objects.create(user=user)
+            user_serialized = UserSerializer(user)
             login(request, user)
-            return JsonResponse({'Message': 'User has been created'}, status=200)
+            return JsonResponse({
+                'message': 'User has been created',
+                'user': user_serialized.data,
+                'token': token.key
+            }, status=200)
         else:
             return JsonResponse({'Message': 'Error while creating user'}, status=400)
     return JsonResponse({'message': 'Invalid request method'}, status=405) 
@@ -65,6 +74,8 @@ def login_user(request):
 
 
 @csrf_exempt
+@api_view(['POST'])
+@authentication_classes([TokenAuthentication])
 def logout_user(request):
     Token.objects.get(user=request.user).delete()
     logout(request)

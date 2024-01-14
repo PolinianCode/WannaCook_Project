@@ -27,10 +27,10 @@ export default function AuthModal({ onClose }) {
 
       console.log(response)
 
-      Cookies.set('token', response.token , { expires: 7 }); 
-
       if(response.message === 'Login successful') {
         console.log("Login successful")
+        Cookies.set('token', response.token , { expires: 7 });
+        router.reload()
       } else {
         console.log("Login failed")
       }
@@ -46,16 +46,17 @@ export default function AuthModal({ onClose }) {
       const userData = {
         username: username,
         email: email,
-        re_password: repeatPassword,
         password: password
       }
 
-      const response = universalApi('user/register/', 'POST', userData)
+      const response = await universalApi('user/register/', 'POST', userData)
 
       console.log(response)
 
-      if (response.Message === 'User has been created') {
+      if (response.message === 'User has been created') {
         console.log(response.Message);
+        Cookies.set('token', response.token , { expires: 7 });
+        router.reload()
       }
 
     } catch (error) {

@@ -1,0 +1,28 @@
+.roundPlus {
+    background-color: #f4d212;
+    color: white;
+    border: none;
+    padding: 5px;
+    font-size: 24px;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px #f4d212;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .roundPlus:hover {
+    background-color: #f5dc4c;
+  }
+  
+  .roundPlus:active {
+    box-shadow: 0 0 2px #f4d212;
+    transform: translateY(2px);
+  }
+
+.roundPlusContainer {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+}

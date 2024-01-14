@@ -2,6 +2,7 @@ import Container from "./Basic/ContainerComponent";
 import Header from "./Header/HeaderComponent";
 import AuthModal from "./Modal/AuthModalComponent";
 import Modal from "./Modal/ModalComponent";
+import AddRecipeButtonComponent from "./Basic/addRecipeButtomComponent";
 import { useState } from "react"
 
 export default function Layout({ children }) {
@@ -24,6 +25,7 @@ export default function Layout({ children }) {
             <Container>
                 {children}
             </Container>
+            <AddRecipeButtonComponent />
         </>
     )
     }

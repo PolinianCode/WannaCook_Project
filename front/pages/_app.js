@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 
 function MyApp({ Component, pageProps }) {
 
-  const [authStatus, setAuthStatus] = useState(false);s
+  const [authStatus, setAuthStatus] = useState(false);//
 
   const router = useRouter()
 
@@ -56,7 +56,7 @@ function MyApp({ Component, pageProps }) {
       </Head>
      
       <Component {...pageProps} />
-      </AuthContext.Provider>
+    </AuthContext.Provider>
   );
 }
 

@@ -8,6 +8,7 @@ import Container from "../Basic/ContainerComponent";
 import Search from "./SearchComponent";
 import { useContext } from "react";
 import AuthContext from "../../contexts/authContext";
+import Cookies from 'js-cookie';
 
 export default function Header( {onOpenModal } ) {
 
@@ -20,6 +21,28 @@ export default function Header( {onOpenModal } ) {
 
     const { authStatus } = useContext(AuthContext);
 
+
+    async function handleLogout() {
+        try {
+          const response = await fetch('http://localhost:8000/api/user/logout/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Token ${Cookies.get('token')} `,
+            },
+          });
+      
+          if (response.status === 200) {
+            console.log('Logout successful');
+            Cookies.remove('token')
+            router.reload()
+          } else {
+            console.log('Error logging out:', response.statusText);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      }
 
   return (
     
@@ -37,7 +60,7 @@ export default function Header( {onOpenModal } ) {
                 <Search></Search>
                 {authStatus ? (
                     <>
-                        dsjhds
+                        <button onClick={handleLogout}>Log Out</button>
                     </>
                 ) : (
                     <button onClick={onOpenModal} className={styles.loginBtn}>
