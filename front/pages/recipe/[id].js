@@ -70,7 +70,7 @@ const RecipePage = () => {
             </div>
             <div className={styles.recipeIngredients}>
               <h3>Ingredients:</h3>
-              <ul>
+              <ul className={styles.ingredientsList}>
                 {recipe.ingredients.map((ingredient, index) => (
                   <li key={index}>
                     {ingredient.ingredientDetails && ingredient.ingredientDetails.name} - {ingredient.quantity} {ingredient.unit}
