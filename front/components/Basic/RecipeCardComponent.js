@@ -2,13 +2,17 @@ import { useRouter } from 'next/router'
 import styles from '../../styles/Basic/RecipeCard.module.css'
 import { universalApi } from '../../utils/api'
 import { useEffect, useState } from 'react'
+import Cookies from 'js-cookie'
 
 
 export default function RecipeCard({ title, description, rating, recipe_id, category}) {
 
     const router = useRouter()
 
+    const userData = universalApi('user/user_data/', 'GET', { token: Cookies.get('token') });
+
     const [categoryDetails, setCategoryDetails] = useState(null);
+    const [saved, setSaved] = useState(false);
 
     useEffect(() => {
         const fetchCategory = async () => {
@@ -23,11 +27,22 @@ export default function RecipeCard({ title, description, rating, recipe_id, cate
         fetchCategory();
     }, [category]);
 
+    const checkIfSaved = async () => {
+        const userData = await universalApi('user/user_data/', 'GET', { token: Cookies.get('token') });
+        const response = await universalApi(`favorites/favorite_exist_check/${userData.id}/${recipe_id}/`, 'GET');
 
-    const handleSave = (e) => {
-        const userData = universalApi('user/user_data/', 'GET', { token: Cookies.get('token') });
+        console.log(response)
 
+        if (response.message === "Favorite exists") {
+            setSaved(true);
+        } else {
+            setSaved(false);
+        }
     }
+
+    useEffect(() => {
+        checkIfSaved();
+    }, []);
 
     const handleClick = (e) => {
         router.push(`/recipe/${recipe_id}`);
@@ -36,6 +51,13 @@ export default function RecipeCard({ title, description, rating, recipe_id, cate
     return (
         <div className={styles.recipeCard}>
                 <div className={styles.recipeContent} onClick={(e) => handleClick()}>
+                    
+                    {saved ? (
+                        <>True</>
+                    ) : (
+                        <>False</>  
+                    )}
+
                     <p className={styles.recipeTags}>
                         {categoryDetails && categoryDetails.name}
                     </p>
