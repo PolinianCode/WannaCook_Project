@@ -39,7 +39,7 @@ export default function RecipeConstructor() {
 
     //Get ingredients from API  
     useEffect(() => {
-        async function fetchCategories() {
+        async function fetchIngredients() {
            try {
                const response = await universalApi('ingredients/', 'GET');
                setIngredients(response)
@@ -50,7 +50,7 @@ export default function RecipeConstructor() {
            }
         }
 
-        fetchCategories()
+        fetchIngredients()
     }, []);
 
     const handleInputChange = (field, value) => {
@@ -101,6 +101,7 @@ export default function RecipeConstructor() {
                         unit: ingredient.unit,
                         recipe: recipeResponse.id,
                     };
+                    
 
                     const ingredientResponse = await universalApi('recipeIngredients/', 'POST', ingredientData);
                     console.log(ingredientResponse);
