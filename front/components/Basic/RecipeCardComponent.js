@@ -46,7 +46,9 @@ export default function RecipeCard({ title, description, rating, recipe_id, cate
 
     const handleSave = async (e) => {
 
-        const userData = await universalApi('user/user_data/', 'GET', { token: Cookies.get('token') });
+        const userData = await  universalApi('user/user_data/', 'GET', { token: Cookies.get('token') });
+
+        console.log("Clicked on" + recipe_id)
 
 
         const saveRecipe = {
@@ -59,7 +61,6 @@ export default function RecipeCard({ title, description, rating, recipe_id, cate
             await universalApi(`favorites/delete_favorite/${userData.id}/${recipe_id}/`, 'DELETE', saveRecipe)
         }else {
             setSaved(true); 
-            
             await universalApi('favorites/', 'POST', saveRecipe);
         }
     }

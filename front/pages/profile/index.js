@@ -3,21 +3,19 @@ import { universalApi } from '../../utils/api';
 import Cookies from 'js-cookie';
 import Layout from '../../components/layout';
 import RecipeCard from '../../components/Basic/RecipeCardComponent';
-import styles from '../../styles/Basic/Grid4.module.css'
-import addStyles from '../../styles/RecipePage/RecipeConstructor.module.css'
-
+import styles from '../../styles/Basic/Grid4.module.css';
+import addStyles from '../../styles/RecipePage/RecipeConstructor.module.css';
 
 export default function Profile() {
   const [user, setUser] = useState(null);
   const [recipes, setRecipes] = useState(null);
-  const [favorites, setFavorites] = useState(null); 
-  const [displayFavorites, setDisplayFavorites] = useState(false); 
+  const [favorites, setFavorites] = useState(null);
+  const [displayFavorites, setDisplayFavorites] = useState(false);
 
   useEffect(() => {
     const getUserData = async () => {
       try {
         const userData = await universalApi('user/user_data/', 'GET', { token: Cookies.get('token') });
-        console.log('User data:', userData);
         setUser(userData);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -32,7 +30,6 @@ export default function Profile() {
       const getRecipes = async (id) => {
         try {
           const recipesData = await universalApi(`recipes/get_by_user_id/${id}/`, 'GET');
-          console.log('Recipes data:', recipesData);
           setRecipes(recipesData);
         } catch (error) {
           console.error('Error fetching recipes:', error);
@@ -47,8 +44,6 @@ export default function Profile() {
     const fetchFavorites = async (id) => {
       try {
         const favoritesData = await universalApi(`favorites/get_by_user_id/${id}/`, 'GET');
-        console.log('Favorites data:', favoritesData);
-
         if (favoritesData && favoritesData.length > 0) {
           const favoritesPromises = favoritesData.map(async (favorite) => {
             try {
@@ -60,10 +55,12 @@ export default function Profile() {
             }
           });
 
-          const recipesData = await Promise.all(favoritesPromises);
-          console.log('Converted:', recipesData);
+          const recipesData = await Promise.allSettled(favoritesPromises);
+          const resolvedRecipes = recipesData
+            .filter((result) => result.status === 'fulfilled')
+            .map((result) => result.value);
 
-          setFavorites(recipesData);
+          setFavorites(resolvedRecipes);
         } else {
           setFavorites([]);
         }
@@ -88,39 +85,53 @@ export default function Profile() {
   return (
     <Layout>
       <div style={{ marginTop: '50px' }}>
-        Hello, <b>{user?.username}</b>!
+        {user ? (
+          <div>
+            Hello, <b>{user.username}</b>!
 
-        <div style={{ marginTop: '50px'}} className={addStyles.actionButtons}>
-          <button onClick={handleRecipes} className={addStyles.ingredientAddButton}>My recipes</button>
-          <button onClick={handleFavorites} className={addStyles.cancelBtn}>My favourites</button>
-        </div>
+            <div style={{ marginTop: '50px' }} className={addStyles.actionButtons}>
+              <button
+                onClick={handleRecipes}
+                className={`${addStyles.ingredientAddButton} ${!displayFavorites ? addStyles.active : ''}`}
+              >
+                My recipes
+              </button>
+              <button
+                onClick={handleFavorites}
+                className={`${addStyles.cancelBtn} ${displayFavorites ? addStyles.active : ''}`}
+              >
+                My favourites
+              </button>
+            </div>
 
-        {displayFavorites ? (
-          <div className={styles.grid}>
-            {favorites?.map((favorite) => (
-              <RecipeCard 
-                key={favorite.recipe.recipe_id} 
-                title={favorite.recipe.title} 
-                description={favorite.recipe.description} 
-                category={favorite.recipe.category}
-                rating={(favorite.recipe.rating_sum / favorite.recipe.rating_num).toFixed(1)} 
-                recipe_id={favorite.recipe.id}
-              />
-            ))}
+            <div className={styles.grid}>
+              {displayFavorites ? (
+                favorites?.map((favorite) => (
+                  <RecipeCard
+                    key={favorite.recipe.id}
+                    title={favorite.recipe.title}
+                    description={favorite.recipe.description}
+                    category={favorite.recipe.category}
+                    rating={(favorite.recipe.rating_sum / favorite.recipe.rating_num).toFixed(1)}
+                    recipe_id={favorite.recipe.id}
+                  />
+                ))
+              ) : (
+                recipes?.map((recipe) => (
+                  <RecipeCard
+                    key={recipe.id}
+                    title={recipe.title}
+                    description={recipe.description}
+                    category={recipe.category}
+                    rating={(recipe.rating_sum / recipe.rating_num).toFixed(1)}
+                    recipe_id={recipe.id}
+                  />
+                ))
+              )}
+            </div>
           </div>
         ) : (
-          <div className={styles.grid}>
-            {recipes?.map((recipe) => (
-              <RecipeCard 
-                key={recipe.recipe_id} 
-                title={recipe.title} 
-                description={recipe.description} 
-                category={recipe.category}
-                rating={(recipe.rating_sum / recipe.rating_num).toFixed(1)} 
-                recipe_id={recipe.id}
-              />
-            ))}
-          </div>
+          <p>Loading user data...</p>
         )}
       </div>
     </Layout>
