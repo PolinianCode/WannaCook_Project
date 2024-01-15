@@ -125,6 +125,7 @@ export default function Profile() {
                     category={recipe.category}
                     rating={(recipe.rating_sum / recipe.rating_num).toFixed(1)}
                     recipe_id={recipe.id}
+                    editable={true}
                   />
                 ))
               )}
