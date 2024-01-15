@@ -87,7 +87,13 @@ export default function Profile() {
       <div style={{ marginTop: '50px' }}>
         {user ? (
           <div>
-            Hello, <b>{user.username}</b>!
+            <h2
+              style={{
+                fontSize: '40px',
+                fontWeight: 'bold',
+                marginBottom: '50px',
+              }}
+            >Hello, <b>{user.username}</b>!</h2>
 
             <div style={{ marginTop: '50px' }} className={addStyles.actionButtons}>
               <button
