@@ -17,6 +17,13 @@
     padding: 8px;
     box-sizing: border-box;
     margin-bottom: 10px;
+    border: 1px solid #e0dede;
+    border-radius: 5px;
+  }
+
+  .fomrContainer select:focus, .formContainer input:focus, .formContainer textarea:focus {
+    outline: none;
+    border: 1px solid #f4d212;
   }
 
   .formContainer textarea {

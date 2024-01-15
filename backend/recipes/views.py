@@ -4,12 +4,10 @@ from .serializers import RecipesSerializer
 from ingredients.models import RecipeIngredient
 from ingredients.serializers import RecipeIngredientSerializer
 from rest_framework.response import Response
-
-#import status
 from rest_framework import status
+from rest_framework.decorators import action
 
 
-from django.shortcuts import get_object_or_404
 
 class RecipesViewSet(viewsets.ModelViewSet):
     queryset = Recipes.objects.all()
@@ -32,3 +30,16 @@ class RecipesViewSet(viewsets.ModelViewSet):
         except Exception as e:
             print(e)
             return Response({"message": "Recipe doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
+        
+    @action(detail=False, methods=['GET'])
+    def get_recipes_by_user_id(self, request, user_id=None):
+        try:
+            recipes = Recipes.objects.filter(user__id=user_id)
+            serializer = self.get_serializer(recipes, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response({"message": "Error getting recipes by user_id"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+

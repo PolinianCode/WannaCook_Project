@@ -27,5 +27,8 @@ urlpatterns = [
     path('api/user/', include('users.urls')),
     path('api/token/', obtain_auth_token, name='api_token_auth'),
     path('api/data/', include('search.urls')),
+
+    path('api/recipes/get_by_user_id/<int:user_id>/', RecipesViewSet.as_view({'get': 'get_recipes_by_user_id'}), name='get_recipes_by_user_id'),
+    path('api/favorites/get_by_user_id/<int:user_id>/', FavoritesViewSet.as_view({'get': 'get_favorites_by_user_id'}), name='get_favorites_by_user_id'),
     path('admin/', admin.site.urls)
 ]

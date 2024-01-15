@@ -1,51 +1,128 @@
 import { useEffect, useState } from 'react';
 import { universalApi } from '../../utils/api';
 import Cookies from 'js-cookie';
-import { useRouter } from 'next/router';
 import Layout from '../../components/layout';
+import RecipeCard from '../../components/Basic/RecipeCardComponent';
+import styles from '../../styles/Basic/Grid4.module.css'
+import addStyles from '../../styles/RecipePage/RecipeConstructor.module.css'
+
 
 export default function Profile() {
-
-  const router = useRouter()
-
-  const [response, setResponse] = useState(false);
+  const [user, setUser] = useState(null);
+  const [recipes, setRecipes] = useState(null);
+  const [favorites, setFavorites] = useState(null); 
+  const [displayFavorites, setDisplayFavorites] = useState(false); 
 
   useEffect(() => {
-    const getUser = async () => {
-      const response = await fetch('http://localhost:8000/api/user/token_check/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Token ${Cookies.get('token')} `,
-        },
-      });
-
-      console.log(response);
-      if(response.status === 200) {
-        setResponse(response.status);
-      } else {  
-        setResponse(response.status);
-        router.push({
-          pathname: '/error',
-          query: { code: response.status, message: "You are not logged in to visit this page" },
-        });
+    const getUserData = async () => {
+      try {
+        const userData = await universalApi('user/user_data/', 'GET', { token: Cookies.get('token') });
+        console.log('User data:', userData);
+        setUser(userData);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
       }
     };
-    getUser();
-  }, [router])
 
-  
+    getUserData();
+  }, []);
+
+  useEffect(() => {
+    if (user?.id) {
+      const getRecipes = async (id) => {
+        try {
+          const recipesData = await universalApi(`recipes/get_by_user_id/${id}/`, 'GET');
+          console.log('Recipes data:', recipesData);
+          setRecipes(recipesData);
+        } catch (error) {
+          console.error('Error fetching recipes:', error);
+        }
+      };
+
+      getRecipes(user.id);
+    }
+  }, [user?.id]);
+
+  useEffect(() => {
+    const fetchFavorites = async (id) => {
+      try {
+        const favoritesData = await universalApi(`favorites/get_by_user_id/${id}/`, 'GET');
+        console.log('Favorites data:', favoritesData);
+
+        if (favoritesData && favoritesData.length > 0) {
+          const favoritesPromises = favoritesData.map(async (favorite) => {
+            try {
+              const recipeData = await universalApi(`recipes/${favorite.recipe}/`, 'GET');
+              return recipeData;
+            } catch (error) {
+              console.error('Error fetching recipe:', error);
+              return null;
+            }
+          });
+
+          const recipesData = await Promise.all(favoritesPromises);
+          console.log('Converted:', recipesData);
+
+          setFavorites(recipesData);
+        } else {
+          setFavorites([]);
+        }
+      } catch (error) {
+        console.error('Error fetching favorites:', error);
+      }
+    };
+
+    if (user?.id) {
+      fetchFavorites(user.id);
+    }
+  }, [user?.id]);
+
+  const handleFavorites = () => {
+    setDisplayFavorites(true);
+  };
+
+  const handleRecipes = () => {
+    setDisplayFavorites(false);
+  };
+
   return (
     <Layout>
-      {response === 200 ? (
-            <div>
-                <h1>Profile</h1>
-            </div>
+      <div style={{ marginTop: '50px' }}>
+        Hello, <b>{user?.username}</b>!
+
+        <div style={{ marginTop: '50px'}} className={addStyles.actionButtons}>
+          <button onClick={handleRecipes} className={addStyles.ingredientAddButton}>My recipes</button>
+          <button onClick={handleFavorites} className={addStyles.cancelBtn}>My favourites</button>
+        </div>
+
+        {displayFavorites ? (
+          <div className={styles.grid}>
+            {favorites?.map((favorite) => (
+              <RecipeCard 
+                key={favorite.recipe.recipe_id} 
+                title={favorite.recipe.title} 
+                description={favorite.recipe.description} 
+                category={favorite.recipe.category}
+                rating={(favorite.recipe.rating_sum / favorite.recipe.rating_num).toFixed(1)} 
+                recipe_id={favorite.recipe.id}
+              />
+            ))}
+          </div>
         ) : (
-            <div>
-                <h1>Not logged in</h1>
-            </div>
+          <div className={styles.grid}>
+            {recipes?.map((recipe) => (
+              <RecipeCard 
+                key={recipe.recipe_id} 
+                title={recipe.title} 
+                description={recipe.description} 
+                category={recipe.category}
+                rating={(recipe.rating_sum / recipe.rating_num).toFixed(1)} 
+                recipe_id={recipe.id}
+              />
+            ))}
+          </div>
         )}
+      </div>
     </Layout>
   );
 }
