@@ -64,10 +64,7 @@ const RecipePage = () => {
           <div className={styles.recipeDetails}>
             <div className={styles.recipeTitle}>{recipe.recipe.title}</div>
             <div className={styles.recipeDescription}>{recipe.recipe.description}</div>
-            <div className={styles.recipeInstructions}>
-              <h3>Instructions:</h3>
-              {recipe.recipe.instruction}
-            </div>
+
             <div className={styles.recipeIngredients}>
               <h3>Ingredients:</h3>
               <ul className={styles.ingredientsList}>
@@ -78,6 +75,11 @@ const RecipePage = () => {
                 ))}
               </ul>
             </div>
+            <div className={styles.recipeInstructions}>
+              <h3>Instructions:</h3>
+              {recipe.recipe.instruction}
+            </div>
+           
             <CommentsSection recipe_id={id} />
           </div>
         </div>
