@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { universalApi } from '../../utils/api';
 import styles from '../../styles/Basic/RecipePage.module.css';
 import Layout from '../../components/layout';
+import CommentsSection from '../../components/Recipe_interaction/comment_section';
 
 const RecipePage = () => {
   const router = useRouter();
@@ -60,9 +61,6 @@ const RecipePage = () => {
   return (
       <Layout>
           <div className={styles.recipeContainer}>
-          <div className={styles.recipeImage}>
-            Image
-          </div>
           <div className={styles.recipeDetails}>
             <div className={styles.recipeTitle}>{recipe.recipe.title}</div>
             <div className={styles.recipeDescription}>{recipe.recipe.description}</div>
@@ -80,6 +78,7 @@ const RecipePage = () => {
                 ))}
               </ul>
             </div>
+            <CommentsSection recipe_id={id} />
           </div>
         </div>
       </Layout>
