@@ -83,4 +83,21 @@
 .recipeSave svg {
   margin-right: 6px;
 }
+
+.recipeSaved {
+  display: flex;
+  align-items: center;
+  padding: 6px 14px 6px 12px;
+  border-radius: 4px;
+  border: 2px solid currentColor;
+  color: var(--primary);
+  background: none;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: auto;
+  width: 50%;
+  color: white;
+  background-color: #f4d212;
+  transition: .1s linear;
+}
   

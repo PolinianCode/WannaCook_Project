@@ -32,3 +32,15 @@ class FavoritesViewSet(viewsets.ModelViewSet):
         except Exception as e:
             print(e)
             return False
+        
+
+    def delete_favorite(self, request, user_id, recipe_id):
+        try:
+            favorite = Favorites.objects.filter(user__id=user_id, recipe__id=recipe_id)
+            if favorite:
+                favorite.delete()
+                return Response({"message": "Favorite deleted"}, status=status.HTTP_200_OK)
+            return Response({"message": "Favorite doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print(e)
+            return False

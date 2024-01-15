@@ -31,5 +31,6 @@ urlpatterns = [
     path('api/recipes/get_by_user_id/<int:user_id>/', RecipesViewSet.as_view({'get': 'get_recipes_by_user_id'}), name='get_recipes_by_user_id'),
     path('api/favorites/get_by_user_id/<int:user_id>/', FavoritesViewSet.as_view({'get': 'get_favorites_by_user_id'}), name='get_favorites_by_user_id'),
     path('api/favorites/favorite_exist_check/<int:user_id>/<int:recipe_id>/', FavoritesViewSet.as_view({'get': 'favorite_exist_check'}), name='favorite_exist_check'),
+    path('api/favorites/delete_favorite/<int:user_id>/<int:recipe_id>/', FavoritesViewSet.as_view({'delete': 'delete_favorite'}), name='delete_favorite'),
     path('admin/', admin.site.urls)
 ]
