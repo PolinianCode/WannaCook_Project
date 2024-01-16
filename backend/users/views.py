@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from rest_framework.decorators import authentication_classes
-from .serializers import UserSerializer
+from .serializers import UserSerializer,UserSerializerWithoutSensitiveData
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
@@ -94,4 +94,15 @@ def token_check(request):
 def get_user_data(request):
     user = request.user
     serializer = UserSerializer(user)
+    return Response(serializer.data)
+
+#get user by id
+@api_view(['GET'])
+
+def get_user_by_id(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = UserSerializerWithoutSensitiveData(user)
     return Response(serializer.data)

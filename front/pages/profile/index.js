@@ -5,12 +5,15 @@ import Layout from '../../components/layout';
 import RecipeCard from '../../components/Basic/RecipeCardComponent';
 import styles from '../../styles/Basic/Grid4.module.css';
 import addStyles from '../../styles/RecipePage/RecipeConstructor.module.css';
+import Head from 'next/head';
 
 export default function Profile() {
   const [user, setUser] = useState(null);
   const [recipes, setRecipes] = useState(null);
   const [favorites, setFavorites] = useState(null);
   const [displayFavorites, setDisplayFavorites] = useState(false);
+
+  
 
   useEffect(() => {
     const getUserData = async () => {
@@ -83,7 +86,11 @@ export default function Profile() {
   };
 
   return (
+    
     <Layout>
+      <Head>
+        <title>Profile</title>
+      </Head>
       <div style={{ marginTop: '50px' }}>
         {user ? (
           <div>

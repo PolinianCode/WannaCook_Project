@@ -1,6 +1,7 @@
 import NotFound from "../../components/Basic/404"
 import { useRouter } from "next/router";
 import Layout from "../../components/layout";
+import Head from 'next/head';
 
 export default function Error() { 
 
@@ -10,6 +11,9 @@ export default function Error() {
 
     return (
         <Layout>
+            <Head>
+                <title>Error {code}</title>
+            </Head>
             <NotFound headingTitle={`Error ${code}`} pageText={message}/>
         </Layout>
     )

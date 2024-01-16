@@ -5,6 +5,7 @@ import { universalApi } from '../../utils/api';
 import styles from '../../styles/Basic/RecipePage.module.css';
 import Layout from '../../components/layout';
 import CommentsSection from '../../components/Recipe_interaction/comment_section';
+import Head from 'next/head';
 
 const RecipePage = () => {
   const router = useRouter();
@@ -60,6 +61,9 @@ const RecipePage = () => {
 
   return (
       <Layout>
+          <Head>
+            <title>{recipe.recipe.title}</title>
+          </Head>
           <div className={styles.recipeContainer}>
           <div className={styles.recipeDetails}>
             <div className={styles.recipeTitle}>{recipe.recipe.title}</div>

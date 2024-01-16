@@ -6,3 +6,10 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email']
+
+
+#user serializers without sensitive data
+class UserSerializerWithoutSensitiveData(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username']

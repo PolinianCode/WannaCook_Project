@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import RecipeCard from "../../components/Basic/RecipeCardComponent";
 import styles from "../../styles/Basic/Grid4.module.css"
 import Layout from "../../components/layout";
+import Head from 'next/head';
 
 export default function SearchResult() {
     const router = useRouter();
@@ -24,6 +25,9 @@ export default function SearchResult() {
         return (
             <>
                 <Layout>
+                <Head>
+                    <title>Search results</title>
+                </Head>
                 <div className={styles.grid}>
                             {searchData.search_results.map((result) => (
                                 <RecipeCard 

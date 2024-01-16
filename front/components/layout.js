@@ -4,6 +4,7 @@ import AuthModal from "./Modal/AuthModalComponent";
 import Modal from "./Modal/ModalComponent";
 import AddRecipeButtonComponent from "./Basic/addRecipeButtomComponent";
 import { useState } from "react"
+import FooterComponent from "./Footer/FooterComponent";
 
 export default function Layout({ children }) {
 
@@ -26,6 +27,7 @@ export default function Layout({ children }) {
                 {children}
             </Container>
             <AddRecipeButtonComponent />
+            <FooterComponent />
         </>
     )
     }

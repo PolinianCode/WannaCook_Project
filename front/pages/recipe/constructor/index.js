@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import styles from '../../../styles/RecipePage/RecipeConstructor.module.css'
 import { universalApi } from '../../../utils/api';
 import Cookies from "js-cookie";
+import Head from 'next/head';
+import { useRouter } from "next/router";
 
 export default function RecipeConstructor() {
 
@@ -17,6 +19,8 @@ export default function RecipeConstructor() {
 
     const [categories, setCategories] = useState([])
     const [ingredients, setIngredients] = useState([{}])
+
+    const router = useRouter();
 
     //Get categories from API
     useEffect(() => {
@@ -105,10 +109,13 @@ export default function RecipeConstructor() {
 
                     const ingredientResponse = await universalApi('recipeIngredients/', 'POST', ingredientData);
                     console.log(ingredientResponse);
+
                 } catch (error) {
                     console.error('Error creating ingredient:', error);
                 }
             }
+
+            router.push(`/recipe/${recipeResponse.id}`);
 
             console.log(recipeResponse);
         } catch (error) {
@@ -118,6 +125,9 @@ export default function RecipeConstructor() {
 
     return (
         <Layout>
+            <Head>
+                <title>Adding recipe</title>
+            </Head>
             <form className={styles.formContainer}>
                 <label>
                     Category

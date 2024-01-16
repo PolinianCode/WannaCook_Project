@@ -48,13 +48,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <AuthContext.Provider value={{ authStatus, setAuthStatus }}>
-      <Head>
-        
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
-        />
-      </Head>
+      <Head />
      
       <Component {...pageProps} />
     </AuthContext.Provider>

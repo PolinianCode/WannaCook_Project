@@ -4,6 +4,7 @@ import styles from '../../../styles/RecipePage/RecipeConstructor.module.css';
 import { universalApi } from '../../../utils/api';
 import Cookies from "js-cookie";
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 export default function EditRecipe() {
   const [recipe, setRecipe] = useState({
@@ -110,6 +111,8 @@ export default function EditRecipe() {
       user: userData.id,
     };
 
+    
+
     try {
       const recipeResponse = await universalApi(`recipes/${id}/`, 'PUT', sendData);
 
@@ -137,8 +140,23 @@ export default function EditRecipe() {
     }
   };
 
+  const handleDelete = async (e) => {
+    e.preventDefault();
+
+    try {
+      const deleteResponse = await universalApi(`recipes/${id}/`, 'DELETE');
+      console.log('Recipe deleted successfully:', deleteResponse);
+      router.push('/profile');
+    } catch (error) {
+      console.error('Error deleting recipe:', error);
+    }
+  }
+
   return (
     <Layout>
+      <Head>
+        <title>Editing recipe</title>
+      </Head>
       <form className={styles.formContainer}>
         <label>
           Category
@@ -204,6 +222,9 @@ export default function EditRecipe() {
         <div className={styles.actionButtons}>
           <button type="submit" className={styles.ingredientAddButton} onClick={(e) => handleSubmit(e)}>
             Update Recipe
+          </button>
+          <button type="submit" className={styles.cancelBtn} onClick={(e) => handleDelete(e)}>
+            Delete Recipe
           </button>
           <button type="button" className={styles.cancelBtn} onClick={() => router.push('/recipes')}>
             Cancel
