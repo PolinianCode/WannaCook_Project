@@ -2,25 +2,18 @@
 
 import { useRouter } from 'next/router'
 import { universalApi } from '../../utils/api'
+import { useContext } from 'react';
 
 import { useEffect, useState } from 'react';
 import styles from '../../styles/RecipePage/Comments.module.css';
-
-const handleCommentSubmit = (e) => {
-    e.preventDefault();
-
-    // Add the new comment to the comments array
-    setComments([...comments, newComment]);
-
-    // Clear the input field
-    setNewComment('');
-  };
+import AuthContext from '../../contexts/authContext';
 
 const CommentsSection = ({recipe_id}) => {
 
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
-  const [username, setUsername] = useState('');
+
+  const { authStatus } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -60,11 +53,44 @@ const formateDate = (date) => {
   return formattedDate
 }
 
-  // Function to handle submission of a new comment
+
+const handleCommentSubmit = async (e) => {
+  e.preventDefault();
+
+
+  const comment = {
+    comment_text: newComment,
+    recipe: recipe_id,
+    user: 29,
+  }
+
+  const responseComment = await universalApi(`comments/`, 'POST', comment);
+
+  setComments((prevComments) => [...prevComments, responseComment]);
+  setNewComment('');
+}
+
 
   return (
     <div className={styles.commentsContainer}>
       <h2>Comments</h2>
+      {authStatus ? (
+        <form className={styles.commentForm} onSubmit={handleCommentSubmit}>
+        <textarea
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          placeholder="Add a comment..."
+          rows={3}
+        />
+        <button type="submit">
+          Add Comment
+        </button>
+      </form>
+      ) : (
+        <p>Log in to add comments.</p>
+      )}
+      
+
       {comments.length > 0 ? (
         <ul className={styles.list}>
           {comments.map((comment) => (

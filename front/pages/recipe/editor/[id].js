@@ -226,7 +226,7 @@ export default function EditRecipe() {
           <button type="submit" className={styles.cancelBtn} onClick={(e) => handleDelete(e)}>
             Delete Recipe
           </button>
-          <button type="button" className={styles.cancelBtn} onClick={() => router.push('/recipes')}>
+          <button type="button" className={styles.cancelBtn} onClick={() => router.push('/profile')}>
             Cancel
           </button>
         </div>

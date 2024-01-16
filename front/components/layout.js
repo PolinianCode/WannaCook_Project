@@ -27,7 +27,7 @@ export default function Layout({ children }) {
                 {children}
             </Container>
             <AddRecipeButtonComponent />
-            <FooterComponent />
+            {/* <FooterComponent /> */}
         </>
     )
     }

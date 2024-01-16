@@ -148,6 +148,7 @@ export default function RecipeConstructor() {
                     {recipe.ingredients.map((ingredient, index) => (
                         <div key={index} className={styles.ingredientsInputs}>
                         <select value={ingredient.ingredient} onChange={(e) => handleIngredientChange(index, 'ingredient', e.target.value)}>
+                            <option value="" disabled>------</option>
                             {ingredients.map((ingredientOption) => (
                             <option key={ingredientOption.id} value={ingredientOption.id}>
                                 {ingredientOption.name}

@@ -6,6 +6,7 @@ import styles from '../../styles/Basic/RecipePage.module.css';
 import Layout from '../../components/layout';
 import CommentsSection from '../../components/Recipe_interaction/comment_section';
 import Head from 'next/head';
+import AuthContext from '../../contexts/authContext';
 
 const RecipePage = () => {
   const router = useRouter();
