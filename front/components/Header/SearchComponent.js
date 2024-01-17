@@ -75,15 +75,15 @@ export default function Search () {
 
     //Choose recipe ingredients in filter, many to choose
     const handleIngredient = (ingredient) => {
-        const isSelectedIngredient = selectedIngredients.some(selected => selected.id === ingredient.id)
-
+        const isSelectedIngredient = selectedIngredients.some(selected => selected.id === ingredient.id);
+    
         if (isSelectedIngredient) {
             setSelectedIngredient(prevSelected => prevSelected.filter(selected => selected.id !== ingredient.id));
-          } else {
+        } else {
             setSelectedIngredient(prevSelected => [...prevSelected, ingredient]);
-          }
-
+        }
     }
+    
 
 
     //Catch search input changes
@@ -102,7 +102,9 @@ export default function Search () {
             if (searchTerm !== "") requestJson.title = searchTerm;
             if (selectedCategory !== undefined && (selectedCategory !== null)) requestJson.category = selectedCategory.id;
             if (selectedIngredients.length > 0) {
-                requestJson.ingredients = selectedIngredients.map(ingredient => ingredient.id);
+
+                requestJson.ingredients = selectedIngredients.map((ingredient) => ingredient.id.toString());
+
             }
 
             console.log(requestJson)

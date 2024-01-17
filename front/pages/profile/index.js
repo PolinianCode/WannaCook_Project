@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect, useState } from 'react';
 import { universalApi } from '../../utils/api';
 import Cookies from 'js-cookie';
@@ -7,13 +9,14 @@ import styles from '../../styles/Basic/Grid4.module.css';
 import addStyles from '../../styles/RecipePage/RecipeConstructor.module.css';
 import Head from 'next/head';
 
+
 export default function Profile() {
   const [user, setUser] = useState(null);
   const [recipes, setRecipes] = useState(null);
   const [favorites, setFavorites] = useState(null);
   const [displayFavorites, setDisplayFavorites] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-
+  const [value, setValue] = useState('');
   
 
   useEffect(() => {
@@ -90,12 +93,22 @@ export default function Profile() {
     setIsEditing(true);
   }
 
-  // const handleChange = async (e) => {
-    
-  //   const response = await universalApi(`user/update_user/`, 'POST', { token: Cookies.get('token'), username: e.target.value });
+  const handleChange = async (e) => {
 
-  //   setIsEditing(false);
-  // }
+    console.log(value);
+    
+    if(value.length > 0){
+      const response = await universalApi('user/edit_username/', 'PATCH', { token: Cookies.get('token'), username: value });
+      setUser({
+        ...user,
+        username: value,
+      });
+    }
+
+
+
+    setIsEditing(false);
+  }
 
   return (
     
@@ -130,8 +143,17 @@ export default function Profile() {
                     flexDirection: 'row',
                     alignItems: 'center',
                   }}>
-                    Hello,<input type="text" value={user.username} />
-                    <button style={{ alignSelf: 'center' }}>Save</button>
+                    Hello,<input type="text" onChange={e => { setValue(e.currentTarget.value); }}
+                      style={{
+                        outline: 'none',
+                        borderColor: '#0000000'
+                        
+                      }}
+                    />
+                    <button style={{ alignSelf: 'center' }}  onClick={(e) =>handleChange(e)}>
+                      Save
+
+                    </button>
 
                   </div>
                 ) : (

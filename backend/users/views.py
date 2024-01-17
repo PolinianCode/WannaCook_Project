@@ -106,3 +106,17 @@ def get_user_by_id(request, user_id):
         return Response(status=status.HTTP_404_NOT_FOUND)
     serializer = UserSerializerWithoutSensitiveData(user)
     return Response(serializer.data)
+
+
+
+@csrf_exempt
+@api_view(['PATCH'])
+@authentication_classes([TokenAuthentication])
+def edit_username(request):
+    user = request.user
+    username = request.data.get('username')
+    if username:
+        user.username = username
+        user.save()
+        return Response({'Message': 'Username updated successfully'}, status=status.HTTP_200_OK)
+    return Response({'Message': 'Invalid request'}, status=status.HTTP_400_BAD_REQUEST)

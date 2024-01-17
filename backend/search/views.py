@@ -1,6 +1,5 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
 from recipes.models import Recipes
 from ingredients.models import RecipeIngredient
 from recipes.serializers import RecipesSerializer
@@ -11,7 +10,7 @@ def search_recipes(request):
         title = request.GET.get('title')
         category = request.GET.get('category')
         user = request.GET.get('user')
-        ingredient = request.GET.getlist('ingredients')
+        ingredients = request.GET.get('ingredients')
 
         filters = {}
         if title:
@@ -20,8 +19,10 @@ def search_recipes(request):
             filters['category__id'] = category
         if user:
             filters['user__nickname__icontains'] = user
-        if ingredient:
-            recipes_with_ingredients = RecipeIngredient.objects.filter(ingredient_id__in=ingredient).values_list('recipe_id', flat=True)
+        if ingredients:
+            ingredient_ids = [int(ingredient_id) for ingredient_id in ingredients.split(',')]
+
+            recipes_with_ingredients = RecipeIngredient.objects.filter(ingredient_id__in=ingredient_ids).values_list('recipe_id', flat=True)
             filters['id__in'] = recipes_with_ingredients
 
         search_results = Recipes.objects.filter(**filters)
