@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { universalApi } from '../../utils/api';
@@ -7,6 +8,7 @@ import CommentsSection from '../../components/Recipe_interaction/comment_section
 import Head from 'next/head';
 import Cookies from 'js-cookie';
 import AuthContext from '../../contexts/authContext';
+import { useContext } from 'react';
 
 import React from 'react'; 
 import ReactStars from 'react-stars'
@@ -14,6 +16,7 @@ import ReactStars from 'react-stars'
 const RecipePage = () => {
   const router = useRouter();
   const { id } = router.query;
+  const { authStatus } = useContext(AuthContext);
 
   const [recipe, setRecipe] = useState(null);
   const [rating, setRating] = useState(null);
@@ -24,13 +27,23 @@ const RecipePage = () => {
     try {
       // Assuming you have a function to send the rating to the server
       // await sendRatingToServer(stars);
-  
       // Update the local state with the selected rating
-      setRating(stars);
       
+      console.log(rating)
       // Other UI update logic as needed
       console.log('Selected rating:', stars);
-      universalApi(`ratings/`, 'POST', { recipe: id, user: userData.id, value: stars });
+      if (rating !== null) {
+        console.log("PATCH")
+        universalApi(`ratings/${rating.id}/`, 'PATCH', { recipe: id, user: rating.user, value: stars });
+      }
+      else {
+        console.log(userData)
+        universalApi(`ratings/`, 'POST', { recipe: id, user: userData.id, value: stars });
+      }
+      setRating(prevRating => ({
+        ...prevRating,
+        value: stars
+      }));
     } catch (error) {
       console.error('Error updating rating:', error);
     }
@@ -58,14 +71,18 @@ const RecipePage = () => {
             ingredients: ingredientsWithDetails,
           });
 
-          try{
-            const userData = await universalApi('user/user_data/', 'GET', { token: Cookies.get('token') });
-            setUserData(userData);
-          } catch (error) {
-            console.error('Error fetching user data:', error);
-          }
+          if (authStatus === true) {
+            const response = await universalApi('user/user_data/', 'GET', { token: Cookies.get('token') });
+            
+            setUserData(response);
+            const rating_response = await universalApi(`ratings/get_rating_by_user_recipe/?user=${response.id}&recipe=${id}`, 'GET');
+            if (!(rating_response instanceof Promise)) {
+              console.log("TEST")
+              setRating(rating_response);
+              console.log("NOT PROMISE")
+            }
+          };
 
-          fetchUserRating();
 
         } else {
           console.error('Invalid API response structure:', response);
@@ -78,7 +95,7 @@ const RecipePage = () => {
     if (id) {
       fetchRecipe();
     }
-  }, [id]);
+  }, [id, authStatus]);
 
   const fetchIngredientDetails = async (ingredientId) => {
     try {
@@ -90,17 +107,8 @@ const RecipePage = () => {
     }
   };
 
-  const fetchUserRating = async (user_id) => {
-    try {
-      
 
-      const response = await universalApi(`ratings/get_rating_by_user_recipe/?user_id=${user_id}&recipe_id=${id}`, 'GET');
-      setRating(response.value);
-      
-    } catch (error) {
-      console.error('Error getting ratings:', error);
-    }
-  }
+
 
   if (!recipe) {
     return <p>Loading...</p>;
@@ -133,14 +141,29 @@ const RecipePage = () => {
             </div>
             
             <div> 
-              <ReactStars 
+              {rating !== null ? (
+                <div>
+                <ReactStars 
                 count={5}
-                value={rating} 
+                value={rating.value} 
                 size={24}
                 half={false} 
                 color2={'#ffd700'}
                 onChange={rate}
-                edit={true} /> 
+                />
+                <button className={styles.deleteRating}>Delete rating</button>
+                </div> 
+                ): (
+                  <ReactStars 
+                  count={5}
+                  value={0} 
+                  size={24}
+                  half={false} 
+                  color2={'#ffd700'}
+                  onChange={rate}
+                  />
+                  )}
+                  
             </div> 
               <CommentsSection recipe_id={id} />
             </div>

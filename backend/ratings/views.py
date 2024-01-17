@@ -14,8 +14,9 @@ class RatingsViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['GET'])
     def get_rating_by_user_recipe(self, request):
         try:
-            ratings = Ratings.objects.filter(user_id=request.query_params.get('user_id'), recipe_id = request.query_params.get('recipe_id'))
-            serializer = self.get_serializer(ratings, many=True)
+            rating = Ratings.objects.get(user=request.query_params.get('user'), recipe = request.query_params.get('recipe'))
+            #rating = Ratings.objects.filter(user_id=request.query_params.get('user_id'), recipe_id = request.query_params.get('recipe_id'))
+            serializer = self.get_serializer(rating, many=False)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -32,7 +33,7 @@ class RatingsViewSet(viewsets.ModelViewSet):
         recipe_id = request.data['recipe']
         recipe = Recipes.objects.get(id=recipe_id)
         recipe.rating_num += 1
-        recipe.rating_sum += request.data['value']
+        recipe.rating_sum += int(request.data['value'])
         recipe.save()
 
         self.perform_create(serializer)
