@@ -76,7 +76,8 @@ const RecipePage = () => {
 
   const fetchUserRating = async () => {
     try {
-      token = cookies ? cookies.g
+      const userData = await universalApi('user/user_data/', 'GET', { token: Cookies.get('token') });
+      console.log(userData)
       const response = await universalApi(``, 'GET');
       setRatings(response);
     } catch (error) {
