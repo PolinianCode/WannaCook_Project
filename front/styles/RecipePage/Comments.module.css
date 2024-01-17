@@ -38,6 +38,15 @@
   border-radius: 5px;
 }
 
+.editTextArea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  border: 1px solid #000000;
+  border-radius: 5px;
+}
+
 .commentForm button {
   background-color: #f4d212;
   color: #ffffff;
@@ -51,4 +60,21 @@
 .commentForm button:disabled {
   background-color: #cccccc; 
   cursor: not-allowed;
+}
+
+.commentActionBtn {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.commentActionBtn button {
+  background-color: #f4d212;
+  color: #ffffff;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }

@@ -13,8 +13,11 @@ const CommentsSection = ({recipe_id}) => {
 
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
+  const [userDataHook, setUserData] = useState(null);
+  const [editedComment, setEditedComment] = useState({ id: null, text: '' });
 
   const { authStatus } = useContext(AuthContext);
+
 
   const router = useRouter();
 
@@ -28,8 +31,11 @@ const CommentsSection = ({recipe_id}) => {
             return { ...comment, username: userData.username };
           })
         );
-  
+
+        const userData = await universalApi('user/user_data/', 'GET', { token: Cookies.get('token') });
+        
         setComments(commentsWithUserData);
+        setUserData(userData);
   
       } catch (error) {
         console.error('Error getting comments:', error);
@@ -37,7 +43,10 @@ const CommentsSection = ({recipe_id}) => {
     };
   
     fetchComments();
-  }, [recipe_id]);
+  }, [recipe_id, userDataHook?.id]);
+
+
+
 
 const formateDate = (date) => {
   const originalDateString = date;
@@ -84,55 +93,88 @@ const handleDeleteComment = async (commentId) => {
 }
 
 const handleEditComment = async (commentId, commentText) => {
-  try {
-    const comment = {
-      comment_text: commentText,
-    };
-
-    const responseComment = await universalApi(`comments/${commentId}/`, 'PATCH', comment);
-    setComments((prevComments) => prevComments.map((comment) => comment.id === commentId ? { ...comment, comment_text: responseComment.comment_text } : comment));
-  } catch (error) {
-    console.error('Error editing comment:', error);
-  }
+  setEditedComment({ id: commentId, text: commentText });
 }
 
 
-  return (
-    <div className={styles.commentsContainer}>
-      <h2>Comments</h2>
-      {authStatus ? (
-        <form className={styles.commentForm} onSubmit={handleCommentSubmit}>
+const handleSaveEdit = async () => {
+  try {
+    const comment = {
+      comment_text: editedComment.text,
+    };
+
+    const responseComment = await universalApi(`comments/${editedComment.id}/`, 'PATCH', comment);
+    setComments((prevComments) =>
+      prevComments.map((comment) =>
+        comment.id === editedComment.id ? { ...comment, comment_text: responseComment.comment_text } : comment
+      )
+    );
+    setEditedComment({ id: null, text: '' });
+  } catch (error) {
+    console.error('Error saving edited comment:', error);
+  }
+};
+
+const handleCancelEdit = () => {
+  setEditedComment({ id: null, text: '' });
+};
+
+return (
+  <div className={styles.commentsContainer}>
+    <h2>Comments</h2>
+    {authStatus ? (
+      <form className={styles.commentForm} onSubmit={handleCommentSubmit}>
         <textarea
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="Add a comment..."
           rows={3}
         />
-        <button type="submit">
-          Add Comment
-        </button>
+        <button type="submit">Add Comment</button>
       </form>
-      ) : (
-        <p>Log in to add comments.</p>
-      )}
-      
+    ) : (
+      <p>Log in to add comments.</p>
+    )}
 
-      {comments.length > 0 ? (
-        <ul className={styles.list}>
-          {comments.map((comment) => (
-            <li key={comment.id} className={styles.commentBlock}>
-              <p className={styles.date}>{formateDate(comment.comment_date)}</p>
-              <p className={styles.userName}>{comment.username}</p>
-              <p className={styles.text}>{comment.comment_text}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No comments yet.</p>
-      )}
-    </div>
-  );
+    {comments.length > 0 ? (
+      <ul className={styles.list}>
+        {comments.map((comment) => (
+          <li key={comment.id} className={styles.commentBlock}>
+            <p className={styles.date}>{formateDate(comment.comment_date)}</p>
+            <p className={styles.userName}>{comment.username}</p>
+            {editedComment.id === comment.id ? (
+              <div>
+                <textarea
+                  value={editedComment.text}
+                  onChange={(e) => setEditedComment({ ...editedComment, text: e.target.value })}
+                  rows={3}
+                  className={styles.editTextArea}
+                />
+                <div className={styles.commentActionBtn}>
+                  <button onClick={handleSaveEdit}>Save</button>
+                  <button onClick={handleCancelEdit}>Cancel</button>
+                </div>
+                
+              </div>
+            ) : (
+              <div>
+                <p className={styles.text}>{comment.comment_text}</p>
+                {userDataHook && comment.user === userDataHook.id && (
+                  <div className={styles.commentActionBtn}>
+                    <button onClick={() => handleEditComment(comment.id, comment.comment_text)}>Edit</button>
+                    <button onClick={() => handleDeleteComment(comment.id)}>Delete</button>
+                  </div>
+                )}
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p>No comments yet.</p>
+    )}
+  </div>
+);
 };
-
 
 export default CommentsSection;
