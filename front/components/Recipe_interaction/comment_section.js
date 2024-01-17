@@ -74,6 +74,28 @@ const handleCommentSubmit = async (e) => {
   setNewComment('');
 };
 
+const handleDeleteComment = async (commentId) => {
+  try {
+    await universalApi(`comments/${commentId}/`, 'DELETE');
+    setComments((prevComments) => prevComments.filter((comment) => comment.id !== commentId));
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+  };
+}
+
+const handleEditComment = async (commentId, commentText) => {
+  try {
+    const comment = {
+      comment_text: commentText,
+    };
+
+    const responseComment = await universalApi(`comments/${commentId}/`, 'PATCH', comment);
+    setComments((prevComments) => prevComments.map((comment) => comment.id === commentId ? { ...comment, comment_text: responseComment.comment_text } : comment));
+  } catch (error) {
+    console.error('Error editing comment:', error);
+  }
+}
+
 
   return (
     <div className={styles.commentsContainer}>
