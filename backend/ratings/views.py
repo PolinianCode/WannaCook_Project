@@ -3,10 +3,27 @@ from rest_framework.response import Response
 from .models import Ratings
 from .serializers import RatingsSerializer
 from recipes.models import Recipes
+from rest_framework.decorators import action
+from rest_framework import status
+
 
 class RatingsViewSet(viewsets.ModelViewSet):
     queryset = Ratings.objects.all()
     serializer_class = RatingsSerializer
+
+    @action(detail=False, methods=['GET'])
+    def get_rating_by_user_recipe(self, request):
+        try:
+            ratings = Ratings.objects.filter(user_id=request.query_params.get('user_id'), recipe_id = request.query_params.get('recipe_id'))
+            serializer = self.get_serializer(ratings, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response({"message": "Error getting ratings by user_id"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
 
     def create(self, request):
         serializer = self.get_serializer(data=request.data)
