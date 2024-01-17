@@ -34,7 +34,7 @@ class RatingsViewSet(viewsets.ModelViewSet):
         recipe_id = request.data['recipe']
         recipe = Recipes.objects.get(id=recipe_id)
         recipe.rating_num += 1
-        recipe.rating_sum += request.data['value']
+        recipe.rating_sum += int(request.data['value'])
         recipe.save()
 
         self.perform_create(serializer)

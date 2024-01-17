@@ -77,10 +77,10 @@ const RecipePage = () => {
             
             setUserData(response);
             const rating_response = universalApi(`ratings/get_rating_by_user_recipe/?user=${response.id}&recipe=${id}`, 'GET');
-            if (rating_response != Promise) {
+            if (!(rating_response instanceof Promise)) {
               setRating(rating_response);
+              console.log("PROMISE")
             }
-
           };
 
 
