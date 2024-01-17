@@ -91,9 +91,11 @@ export default function Profile() {
       <Head>
         <title>Profile</title>
       </Head>
-      <div style={{ marginTop: '50px' }}>
+      <div style={{ marginTop: '50px', width: '100%'}}>
         {user ? (
-          <div>
+          <div styles={{
+            width: '100%',
+          }}>
             <h2
               style={{
                 fontSize: '40px',
@@ -102,7 +104,14 @@ export default function Profile() {
               }}
             >Hello, <b>{user.username}</b>!</h2>
 
-            <div style={{ marginTop: '50px' }} className={addStyles.actionButtons}>
+            <div style={{ marginTop: '50px' }} className={addStyles.actionButtons} styles={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '50px',
+
+            }}>
               <button
                 onClick={handleRecipes}
                 className={`${addStyles.ingredientAddButton} ${!displayFavorites ? addStyles.active : ''}`}

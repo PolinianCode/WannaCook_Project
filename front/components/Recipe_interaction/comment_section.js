@@ -6,6 +6,7 @@ import { useContext } from 'react';
 import { useEffect, useState } from 'react';
 import styles from '../../styles/RecipePage/Comments.module.css';
 import AuthContext from '../../contexts/authContext';
+import Cookies from 'js-cookie';
 
 const CommentsSection = ({recipe_id}) => {
 
@@ -13,6 +14,8 @@ const CommentsSection = ({recipe_id}) => {
   const [newComment, setNewComment] = useState('');
 
   const { authStatus } = useContext(AuthContext);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -56,18 +59,19 @@ const formateDate = (date) => {
 const handleCommentSubmit = async (e) => {
   e.preventDefault();
 
+  const userData = await universalApi('user/user_data/', 'GET', { token: Cookies.get('token') });
 
   const comment = {
     comment_text: newComment,
     recipe: recipe_id,
-    user: 29,
-  }
+    user: userData.id,
+  };
 
   const responseComment = await universalApi(`comments/`, 'POST', comment);
 
-  setComments((prevComments) => [...prevComments, responseComment]);
+  setComments((prevComments) => [ { ...responseComment, username: userData.username }, ...prevComments ]);
   setNewComment('');
-}
+};
 
 
   return (
