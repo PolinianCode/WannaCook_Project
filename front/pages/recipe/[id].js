@@ -7,6 +7,7 @@ import Layout from '../../components/layout';
 import CommentsSection from '../../components/Recipe_interaction/comment_section';
 import Head from 'next/head';
 import AuthContext from '../../contexts/authContext';
+import Cookies from 'js-cookie';
 
 
 const RecipePage = () => {

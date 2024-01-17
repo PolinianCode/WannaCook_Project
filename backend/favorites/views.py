@@ -28,7 +28,7 @@ class FavoritesViewSet(viewsets.ModelViewSet):
             favorite = Favorites.objects.filter(user__id=user_id, recipe__id=recipe_id)
             if favorite:
                 return Response({"message": "Favorite exists"}, status=status.HTTP_200_OK)
-            return Response({"message": "Favorite doesn't exist"}, status=status.HTTP_20)
+            return Response({"message": "Favorite doesn't exist"}, status=status.HTTP_200_OK)
         except Exception as e:
             print(e)
             return False
