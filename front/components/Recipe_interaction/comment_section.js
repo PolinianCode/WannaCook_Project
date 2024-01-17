@@ -16,6 +16,8 @@ const CommentsSection = ({recipe_id}) => {
 
   const { authStatus } = useContext(AuthContext);
 
+  const router = useRouter();
+
   useEffect(() => {
     const fetchComments = async () => {
       try {
@@ -60,18 +62,17 @@ const handleCommentSubmit = async (e) => {
 
   const userData = await universalApi('user/user_data/', 'GET', { token: Cookies.get('token') });
 
-
   const comment = {
     comment_text: newComment,
     recipe: recipe_id,
     user: userData.id,
-  }
+  };
 
   const responseComment = await universalApi(`comments/`, 'POST', comment);
 
-  setComments((prevComments) => [...prevComments, responseComment]);
+  setComments((prevComments) => [ { ...responseComment, username: userData.username }, ...prevComments ]);
   setNewComment('');
-}
+};
 
 
   return (
