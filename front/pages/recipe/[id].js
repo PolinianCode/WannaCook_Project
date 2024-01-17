@@ -51,6 +51,9 @@ const RecipePage = () => {
             ...response,
             ingredients: ingredientsWithDetails,
           });
+
+          fetchUserRating();
+
         } else {
           console.error('Invalid API response structure:', response);
         }
@@ -79,6 +82,7 @@ const RecipePage = () => {
       const userData = await universalApi('user/user_data/', 'GET', { token: Cookies.get('token') });
       console.log(userData)
       const response = await universalApi(``, 'GET');
+      
       setRatings(response);
     } catch (error) {
       console.error('Error getting ratings:', error);

@@ -57,6 +57,8 @@ const formateDate = (date) => {
 const handleCommentSubmit = async (e) => {
   e.preventDefault();
 
+  const userData = await universalApi('user/user_data/', 'GET', { token: Cookies.get('token') });
+
 
   const comment = {
     comment_text: newComment,
