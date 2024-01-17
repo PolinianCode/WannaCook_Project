@@ -42,13 +42,5 @@
 }
  
 
-.rating button {
-  border: none;
-  background: none;
-  font-size: 2em;
-  color: #ffc107; /* Yellow color for stars */
-  cursor: pointer;
-  outline: none;
-}
   /* Add more styles as needed */
   
