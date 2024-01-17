@@ -36,20 +36,26 @@ export default function Home() {
       <Head>
         <title>Wanna Cook</title>
       </Head>
-      {/* <div>
+
+      <div>
+      <div>
       <h1>Wanna Cook</h1>
-      </div> */}
-      <div className={styles.grid}>
-        {recipes.map((recipe) => (
-            <RecipeCard 
-                key={recipe.recipe_id} 
-                title={recipe.title} 
-                description={recipe.description} 
-                category={recipe.category}
-                rating={(recipe.rating_sum / recipe.rating_num).toFixed(1)} 
-                recipe_id={recipe.id}
-            />
-        ))}
+      </div>
+        <div>
+          <h2>Newest recipes</h2>
+        </div>
+        <div className={styles.grid}>
+          {recipes.map((recipe) => (
+              <RecipeCard 
+                  key={recipe.recipe_id} 
+                  title={recipe.title} 
+                  description={recipe.description} 
+                  category={recipe.category}
+                  rating={(recipe.rating_sum / recipe.rating_num).toFixed(1)} 
+                  recipe_id={recipe.id}
+              />
+          ))}
+        </div>  
       </div>      
 
      </Layout>

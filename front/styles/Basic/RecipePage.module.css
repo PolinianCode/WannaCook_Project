@@ -1,45 +1,54 @@
 /* styles/Basic/RecipePage.module.css */
 
 .recipeContainer {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-  }
-  
-  .recipeDetails {
-    flex-grow: 1;
-    padding: 20px;
-  }
-  
-  .recipeTitle {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  
-  .recipeDescription {
-    font-size: 16px;
-    color: #555;
-    margin-bottom: 20px;
-  }
-  
-  .recipeInstructions {
-    font-size: 18px;
-    margin-bottom: 20px;
-  }
-  
-  .recipeIngredients {
-    font-size: 18px;
-  }
-  
-  .recipeIngredients ul {
-    /* list-style: none; */
-    padding: 1;
-  }
-  
-  .recipeIngredients li {
-    margin-bottom: 5px;
-  }
-  
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.recipeDetails {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.recipeTitle {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.recipeDescription {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.recipeInstructions {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.recipeIngredients {
+  font-size: 18px;
+}
+
+.recipeIngredients ul {
+  /* list-style: none; */
+  padding: 1;
+}
+
+.recipeIngredients li {
+  margin-bottom: 5px;
+}
+ 
+
+.rating button {
+  border: none;
+  background: none;
+  font-size: 2em;
+  color: #ffc107; /* Yellow color for stars */
+  cursor: pointer;
+  outline: none;
+}
   /* Add more styles as needed */
   

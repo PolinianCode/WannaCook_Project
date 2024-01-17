@@ -1,6 +1,5 @@
 'use client'
 
-import { useRouter } from 'next/router'
 import { universalApi } from '../../utils/api'
 import { useContext } from 'react';
 

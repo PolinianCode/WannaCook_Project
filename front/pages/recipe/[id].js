@@ -8,11 +8,29 @@ import CommentsSection from '../../components/Recipe_interaction/comment_section
 import Head from 'next/head';
 import AuthContext from '../../contexts/authContext';
 
+
 const RecipePage = () => {
   const router = useRouter();
   const { id } = router.query;
 
   const [recipe, setRecipe] = useState(null);
+  const [rating, setRating] = useState(null);
+
+  const rate = async (stars) => {
+    try {
+      // Assuming you have a function to send the rating to the server
+      await sendRatingToServer(stars);
+  
+      // Update the local state with the selected rating
+      setRating(stars);
+  
+      // Other UI update logic as needed
+      console.log('Selected rating:', stars);
+    } catch (error) {
+      console.error('Error updating rating:', error);
+    }
+  };
+  
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -56,6 +74,16 @@ const RecipePage = () => {
     }
   };
 
+  const fetchUserRating = async () => {
+    try {
+      token = cookies ? cookies.g
+      const response = await universalApi(``, 'GET');
+      setRatings(response);
+    } catch (error) {
+      console.error('Error getting ratings:', error);
+    }
+  }
+
   if (!recipe) {
     return <p>Loading...</p>;
   }
@@ -80,14 +108,29 @@ const RecipePage = () => {
                 ))}
               </ul>
             </div>
+
             <div className={styles.recipeInstructions}>
               <h3>Instructions:</h3>
               {recipe.recipe.instruction}
             </div>
-           
-            <CommentsSection recipe_id={id} />
+            
+            <div className={styles.rating}>
+              {[5, 4, 3, 2, 1].map((stars) => (
+                <button
+                  key={stars}
+                  type="button"
+                  onClick={() => rate(stars)}
+                  className={stars <= rating ? styles.selected : ''}
+                >
+                  ★
+                </button>
+              ))}
+
+            </div>
+              <CommentsSection recipe_id={id} />
+            </div>
           </div>
-        </div>
+        
       </Layout>
   );
 };

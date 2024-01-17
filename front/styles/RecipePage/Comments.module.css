@@ -1,55 +1,54 @@
 .commentsContainer {
-    border-top: 1px solid #000000;
-    width: 100%;
-    padding: 20px;
-  }
-  
-  .list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .commentBlock {
-    border-bottom: 1px solid #000000;
-    width: 95%;
-    padding: 10px 0;
-  }
-  
-  .text {
-    font-size: 23px;
-  }
-  
-  .date,
-  .userName {
-    font-size: 12px;
-    color: #aca000;
-  }
-  
-  .commentForm {
-    margin-top: 20px;
-  }
-  
-  .commentForm textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    font-size: 16px;
-    border: 1px solid #000000;
-    border-radius: 5px;
-  }
-  
-  .commentForm button {
-    background-color: #f4d212;
-    color: #ffffff;
-    padding: 10px 15px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .commentForm button:disabled {
-    background-color: #cccccc; 
-    cursor: not-allowed;
-  }
-  
+  border-top: 1px solid #000000;
+  width: 100%;
+  padding: 20px;
+}
+
+.list {
+  list-style-type: none;
+  padding: 0;
+}
+ 
+.commentBlock {
+  border-bottom: 1px solid #000000;
+  width: 95%;
+  padding: 10px 0;
+}
+
+.text {
+  font-size: 23px;
+}
+
+.date,
+.userName {
+  font-size: 12px;
+  color: #aca000;
+}
+
+.commentForm {
+  margin-top: 20px;
+}
+
+.commentForm textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  border: 1px solid #000000;
+  border-radius: 5px;
+}
+
+.commentForm button {
+  background-color: #f4d212;
+  color: #ffffff;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.commentForm button:disabled {
+  background-color: #cccccc; 
+  cursor: not-allowed;
+}
