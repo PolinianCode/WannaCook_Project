@@ -14,8 +14,9 @@ class RatingsViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['GET'])
     def get_rating_by_user_recipe(self, request):
         try:
-            ratings = Ratings.objects.filter(user_id=request.query_params.get('user_id'), recipe_id = request.query_params.get('recipe_id'))
-            serializer = self.get_serializer(ratings, many=True)
+            rating = Ratings.objects.get(user_id=request.query_params.get('user_id'), recipe_id = request.query_params.get('recipe_id'))
+            #rating = Ratings.objects.filter(user_id=request.query_params.get('user_id'), recipe_id = request.query_params.get('recipe_id'))
+            serializer = self.get_serializer(rating, many=False)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
