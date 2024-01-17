@@ -41,8 +41,11 @@
   margin-bottom: 5px;
 }
  
-.deleteRating button {
-  color:yellow;
+.deleteRating {
+  font-size: medium;
+  border: none;
+  color:white;
+  background-color: #f4d212;
 }
 
   /* Add more styles as needed */
