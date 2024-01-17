@@ -71,15 +71,15 @@ const RecipePage = () => {
             ingredients: ingredientsWithDetails,
           });
 
-          
           if (authStatus === true) {
             const response = await universalApi('user/user_data/', 'GET', { token: Cookies.get('token') });
             
             setUserData(response);
-            const rating_response = universalApi(`ratings/get_rating_by_user_recipe/?user=${response.id}&recipe=${id}`, 'GET');
+            const rating_response = await universalApi(`ratings/get_rating_by_user_recipe/?user=${response.id}&recipe=${id}`, 'GET');
             if (!(rating_response instanceof Promise)) {
+              console.log("TEST")
               setRating(rating_response);
-              console.log("PROMISE")
+              console.log("NOT PROMISE")
             }
           };
 
@@ -142,6 +142,7 @@ const RecipePage = () => {
             
             <div> 
               {rating !== null ? (
+                <div>
                 <ReactStars 
                 count={5}
                 value={rating.value} 
@@ -149,17 +150,20 @@ const RecipePage = () => {
                 half={false} 
                 color2={'#ffd700'}
                 onChange={rate}
-                 /> 
-              ): (
-                <ReactStars 
-                count={5}
-                value={0} 
-                size={24}
-                half={false} 
-                color2={'#ffd700'}
-                onChange={rate}
                 />
-              )}
+                <button className={styles.deleteRating}>Delete rating</button>
+                </div> 
+                ): (
+                  <ReactStars 
+                  count={5}
+                  value={0} 
+                  size={24}
+                  half={false} 
+                  color2={'#ffd700'}
+                  onChange={rate}
+                  />
+                  )}
+                  
             </div> 
               <CommentsSection recipe_id={id} />
             </div>
