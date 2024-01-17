@@ -12,6 +12,7 @@ export default function Profile() {
   const [recipes, setRecipes] = useState(null);
   const [favorites, setFavorites] = useState(null);
   const [displayFavorites, setDisplayFavorites] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   
 
@@ -85,6 +86,17 @@ export default function Profile() {
     setDisplayFavorites(false);
   };
 
+  const handleEdit = () => {
+    setIsEditing(true);
+  }
+
+  // const handleChange = async (e) => {
+    
+  //   const response = await universalApi(`user/update_user/`, 'POST', { token: Cookies.get('token'), username: e.target.value });
+
+  //   setIsEditing(false);
+  // }
+
   return (
     
     <Layout>
@@ -96,13 +108,44 @@ export default function Profile() {
           <div styles={{
             width: '100%',
           }}>
+           <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+              flexDirection: 'row', 
+            }}
+           >
             <h2
-              style={{
-                fontSize: '40px',
-                fontWeight: 'bold',
-                marginBottom: '50px',
-              }}
-            >Hello, <b>{user.username}</b>!</h2>
+                style={{
+                  fontSize: '40px',
+                  fontWeight: 'bold',
+                  marginBottom: '50px',
+                  alignItems: 'center',
+                }}
+              > 
+                {isEditing ? (
+                  <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                    Hello,<input type="text" value={user.username} />
+                    <button style={{ alignSelf: 'center' }}>Save</button>
+
+                  </div>
+                ) : (
+                  <div style={{
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'row',
+                  }}>
+                    <b>Hello,{user.username}!</b>
+                    <button style={{ alignSelf: 'center' }} onClick={handleEdit}>Edit</button>
+                  </div>
+                )}
+              </h2>
+           </div>
 
             <div style={{ marginTop: '50px' }} className={addStyles.actionButtons} styles={{
               width: '100%',
@@ -112,6 +155,7 @@ export default function Profile() {
               marginBottom: '50px',
 
             }}>
+
               <button
                 onClick={handleRecipes}
                 className={`${addStyles.ingredientAddButton} ${!displayFavorites ? addStyles.active : ''}`}
@@ -156,7 +200,7 @@ export default function Profile() {
         ) : (
           <p>Loading user data...</p>
         )}
-      </div>
+      </div>  
     </Layout>
   );
 }

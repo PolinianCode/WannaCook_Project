@@ -1,4 +1,3 @@
-// pages/recipe/[id].js
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { universalApi } from '../../utils/api';
@@ -8,7 +7,6 @@ import CommentsSection from '../../components/Recipe_interaction/comment_section
 import Head from 'next/head';
 import Cookies from 'js-cookie';
 import AuthContext from '../../contexts/authContext';
-import Cookies from 'js-cookie';
 
 import React from 'react'; 
 import ReactStars from 'react-stars'
@@ -32,7 +30,7 @@ const RecipePage = () => {
       
       // Other UI update logic as needed
       console.log('Selected rating:', stars);
-      universalApi(`ratings/`, 'POST', { recipe_id: id, user_id: userData.id, value: stars });
+      universalApi(`ratings/`, 'POST', { recipe: id, user: userData.id, value: stars });
     } catch (error) {
       console.error('Error updating rating:', error);
     }
