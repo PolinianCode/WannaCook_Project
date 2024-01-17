@@ -25,30 +25,31 @@ const RecipePage = () => {
   
   const rate = async (stars) => {
     try {
-      // Assuming you have a function to send the rating to the server
-      // await sendRatingToServer(stars);
-      // Update the local state with the selected rating
       
-      console.log(rating)
-      // Other UI update logic as needed
       console.log('Selected rating:', stars);
+      
       if (rating !== null) {
         console.log("PATCH")
-        universalApi(`ratings/${rating.id}/`, 'PATCH', { recipe: id, user: rating.user, value: stars });
+        universalApi(`ratings/${rating.id}/`, 'PATCH', { recipe: id, user: userData.user, value: stars });
       }
       else {
-        console.log(userData)
-        universalApi(`ratings/`, 'POST', { recipe: id, user: userData.id, value: stars });
+        const response = await universalApi(`ratings/`, 'POST', { recipe: id, user: userData.id, value: stars });
+        setRating(response); 
       }
-      setRating(prevRating => ({
-        ...prevRating,
-        value: stars
-      }));
+      
     } catch (error) {
       console.error('Error updating rating:', error);
     }
   };
   
+  const deleteRating = async () => {
+    try {
+      universalApi(`ratings/${rating.id}/`, 'DELETE');
+      setRating(null);
+    } catch (error) {
+      console.error('Error deleting rating:', error);
+    }
+  }
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -151,7 +152,10 @@ const RecipePage = () => {
                 color2={'#ffd700'}
                 onChange={rate}
                 />
-                <button className={styles.deleteRating}>Delete rating</button>
+                <button
+                  className={styles.deleteRating}
+                  onClick={() => deleteRating()}
+                  >Delete rating</button>
                 </div> 
                 ): (
                   <ReactStars 
