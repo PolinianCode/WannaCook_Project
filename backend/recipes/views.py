@@ -45,7 +45,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['GET'])    
     def get_homepage_recipes(self, request):
         try:
-            queryset = Recipes.objects.all().order_by('-created_date')[:3]
+            queryset = Recipes.objects.all().order_by('-created_date')[:4]
             serializer = self.get_serializer(queryset, many=True)
 
             return Response(serializer.data, status=status.HTTP_200_OK)

@@ -129,7 +129,7 @@ export default function AuthModal({ onClose }) {
             Email:
           </label>
           <input
-            type="text"
+            type="email"
             id="registerEmail"
             name="registerEmail"
             className={styles.input}

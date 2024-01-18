@@ -1,4 +1,4 @@
-// Modal.js
+
 import React, { useRef, useEffect } from 'react';
 import styles from "../../styles/Modal/Modal.module.css";
 

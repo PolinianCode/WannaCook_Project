@@ -1,4 +1,4 @@
-// pages/_app.js
+
 import '../styles/global.css';
 import Head from 'next/head';
 import { useState, useEffect } from 'react';
@@ -14,7 +14,7 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     const checkToken = async () => {
-      const url_excepts = ['/', '/recipe/[id]']
+      const url_excepts = ['/', '/recipe/[id]', '/search']
 
       try {
         const response = await fetch('http://localhost:8000/api/user/token_check/', {
