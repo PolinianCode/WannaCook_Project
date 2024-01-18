@@ -6,7 +6,7 @@ from rest_framework import status
 
 
 class IngredientsViewSet(viewsets.ModelViewSet):
-    queryset = Ingredients.objects.all()
+    queryset = Ingredients.objects.all().order_by('name')
     serializer_class = IngredientsSerializer
 
 class RecipeIngredientViewSet(viewsets.ModelViewSet):
